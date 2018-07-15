@@ -1,8 +1,10 @@
 package ru.leymooo.config;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +13,12 @@ import java.lang.annotation.Target;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +31,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Config {
 
     public Config() {
-        save(new PrintWriter(new ByteArrayOutputStream(0)), getClass(), this, 0);
+        save(new ArrayList<>(), getClass(), this, 0);
     }
 
     /**
@@ -56,14 +64,22 @@ public class Config {
                 }
             }
         }
-        Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Failed to set config option: {0}: {1} | {2} ", new Object[] { key, value, instance });
+        Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Failed to set config option: {0}: {1} | {2} ",
+                new Object[] { key, value, instance });
     }
 
     public boolean load(File file) {
         if (!file.exists()) {
             return false;
         }
-        YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yml = null;
+        try {
+            yml = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Failed to load config: {0}: {1} | {2} ", e);
+            return false;
+        }
         for (String key : yml.getKeys(true)) {
             Object value = yml.get(key);
             if (value instanceof MemorySection) {
@@ -74,10 +90,6 @@ public class Config {
         return true;
     }
 
-    public int getConfigVersion(File file) {
-        return YamlConfiguration.loadConfiguration(file).getInt("config-version", 0);
-    }
-
     /**
      * Set all values in the file (load first to avoid overwriting)
      *
@@ -85,17 +97,14 @@ public class Config {
      */
     public void save(File file) {
         try {
-            if (!file.exists()) {
-                File parent = file.getParentFile();
-                if (parent != null) {
-                    file.getParentFile().mkdirs();
-                }
-                file.createNewFile();
+            File parent = file.getParentFile();
+            if (parent != null) {
+                file.getParentFile().mkdirs();
             }
-            try (PrintWriter writer = new PrintWriter(file)) {
-                Object instance = this;
-                save(writer, getClass(), instance, 0);
-            }
+            Path configFile = Paths.get(file.getPath());
+            List<String> lines = new ArrayList<>();
+            save(lines, getClass(), this, 0);
+            Files.write(configFile, lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.WARNING, "Error:", e);
         }
@@ -157,9 +166,8 @@ public class Config {
         return value != null ? value.toString() : "null";
     }
 
-    private void save(PrintWriter writer, Class<?> clazz, final Object instance, int indent) {
+    private void save(List<String> lines, Class clazz, final Object instance, int indent) {
         try {
-            String CTRF = System.lineSeparator();
             String spacing = repeat(" ", indent);
             for (Field field : clazz.getFields()) {
                 if (field.getAnnotation(Ignore.class) != null) {
@@ -172,7 +180,7 @@ public class Config {
                 Comment comment = field.getAnnotation(Comment.class);
                 if (comment != null) {
                     for (String commentLine : comment.value()) {
-                        writer.write(spacing + "# " + commentLine + CTRF);
+                        lines.add(spacing + "# " + commentLine);
                     }
                 }
                 Create create = field.getAnnotation(Create.class);
@@ -180,21 +188,21 @@ public class Config {
                     Object value = field.get(instance);
                     setAccessible(field);
                     if (indent == 0) {
-                        writer.write(CTRF);
+                        lines.add("");
                     }
                     comment = current.getAnnotation(Comment.class);
                     if (comment != null) {
                         for (String commentLine : comment.value()) {
-                            writer.write(spacing + "# " + commentLine + CTRF);
+                            lines.add(spacing + "# " + commentLine);
                         }
                     }
-                    writer.write(spacing + toNodeName(current.getSimpleName()) + ":" + CTRF);
+                    lines.add(spacing + toNodeName(current.getSimpleName()) + ":");
                     if (value == null) {
                         field.set(instance, value = current.newInstance());
                     }
-                    save(writer, current, value, indent + 2);
+                    save(lines, current, value, indent + 2);
                 } else {
-                    writer.write(spacing + toNodeName(field.getName() + ": ") + toYamlString(field.get(instance), spacing) + CTRF);
+                    lines.add(spacing + toNodeName(field.getName() + ": ") + toYamlString(field.get(instance), spacing));
                 }
             }
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchFieldException | SecurityException e) {
@@ -218,7 +226,8 @@ public class Config {
             setAccessible(field);
             return field;
         } catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Invalid config field: {0} for {1}", new Object[] { String.join(".", split), toNodeName(instance.getClass().getSimpleName()) });
+            Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Invalid config field: {0} for {1}",
+                    new Object[] { String.join(".", split), toNodeName(instance.getClass().getSimpleName()) });
             return null;
         }
     }
