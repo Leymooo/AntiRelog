@@ -39,6 +39,9 @@ public class BossBarUtils {
                 bar.setProgress(progress);
                 progress += add;
                 bossbars.put(i, bar);
+                if (progress > 1.000d) {
+                    progress = 1.000d;
+                }
             }
         }
     }

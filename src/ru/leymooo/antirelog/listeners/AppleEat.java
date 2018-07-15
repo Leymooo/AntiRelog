@@ -29,7 +29,7 @@ public class AppleEat implements Listener {
         ItemStack item = e.getItem();
         if (item.getType() == GOLDEN_APPLE || (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE)) {
 
-            boolean isEnc = (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE) || item.getDurability() == 1;
+            boolean isEnc = (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE) || item.getDurability() >= 1;
             long cd = isEnc ? Settings.IMP.ENCHANTED_GOLDEN_APPLE_COOLDOWN : Settings.IMP.GOLDEN_APPLE_COOLDOWN;
 
             if (Settings.IMP.DISABLED_WORLDS.contains(e.getPlayer().getWorld().getName().toLowerCase())

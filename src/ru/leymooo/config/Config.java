@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -166,7 +165,7 @@ public class Config {
         return value != null ? value.toString() : "null";
     }
 
-    private void save(List<String> lines, Class clazz, final Object instance, int indent) {
+    private void save(List<String> lines, Class<?> clazz, final Object instance, int indent) {
         try {
             String spacing = repeat(" ", indent);
             for (Field field : clazz.getFields()) {
