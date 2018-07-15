@@ -1,0 +1,5 @@
+name: AntiRelog
+main: ru.leymooo.antirelog.Main
+version: 2.3
+author: Leymooo
+softdepend: [Essentials]
