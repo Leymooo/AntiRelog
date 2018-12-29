@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 import ru.leymooo.config.Settings;
 
 public class BossBarUtils {
-    
+
     private static HashMap<Integer, BossBar> bossbars = new HashMap<>();
-    
+
     public static void setNewBossBar(Player p, int time) {
-        if (bossbars == null ||bossbars.isEmpty()) {
+        if (bossbars == null || bossbars.isEmpty()) {
             return;
         }
         for (BossBar bar : bossbars.values()) {
@@ -36,6 +36,7 @@ public class BossBarUtils {
             double progress = add;
             for (int i = 1; i <= time; i++) {
                 BossBar bar = Bukkit.createBossBar(title.replace("%time%", i + ""), BarColor.RED, BarStyle.SOLID, BarFlag.CREATE_FOG);
+                bar.removeFlag(BarFlag.CREATE_FOG);
                 bar.setProgress(progress);
                 progress += add;
                 bossbars.put(i, bar);

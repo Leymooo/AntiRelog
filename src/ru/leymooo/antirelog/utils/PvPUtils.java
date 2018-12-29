@@ -34,7 +34,7 @@ public class PvPUtils {
         startPvp(player);
         startPvp(damager);
     }
-    
+
     public boolean checkPlayerOrStartPvp(Player player, Player damager) {
         if (Utils.checkPlayer(damager)) {
             return true;

@@ -17,7 +17,6 @@ import ru.leymooo.config.Settings;
 
 public class PotionSplash extends PvPUtils implements Listener {
 
-    
     public PotionSplash(PlayerStorage playerStorage) {
         super(playerStorage);
     }

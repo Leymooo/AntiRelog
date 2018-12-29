@@ -62,7 +62,4 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&', pattern.matcher(msg).replaceAll("\n"));
     }
 
-
-
-
 }

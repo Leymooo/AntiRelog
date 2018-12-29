@@ -1,6 +1,6 @@
 name: AntiRelog
 main: ru.leymooo.antirelog.Main
-version: 2.4.1
+version: 2.4.2
 author: Leymooo
 softdepend: [Essentials]
 api-version: 1.13

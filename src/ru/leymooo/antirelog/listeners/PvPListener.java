@@ -103,8 +103,8 @@ public class PvPListener extends PvPUtils implements Listener {
             }
         }
         if (!Settings.IMP.MESSAGES.COMMAND_ON_LEAVE.trim().isEmpty()) {
-            String command =
-                    ChatColor.translateAlternateColorCodes('&', Settings.IMP.MESSAGES.COMMAND_ON_LEAVE).replace("%player%", p.getName());
+            String command = ChatColor.translateAlternateColorCodes('&', Settings.IMP.MESSAGES.COMMAND_ON_LEAVE).replace("%player%",
+                        p.getName());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
     }

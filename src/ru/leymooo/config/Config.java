@@ -35,13 +35,10 @@ public class Config {
 
     /**
      * Set the value of a specific node<br>
-     * Probably throws some error if you supply non existing keys or invalid
-     * values
+     * Probably throws some error if you supply non existing keys or invalid values
      *
-     * @param key
-     *            config node
-     * @param value
-     *            value
+     * @param key   config node
+     * @param value value
      */
     private void set(String key, Object value) {
         String[] split = key.split("\\.");
@@ -63,8 +60,7 @@ public class Config {
                 }
             }
         }
-        Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Failed to set config option: {0}: {1} | {2} ",
-                new Object[] { key, value, instance });
+        Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Failed to set config option: {0}: {1} | {2} ", new Object[] { key, value, instance });
     }
 
     public boolean load(File file) {
@@ -213,10 +209,8 @@ public class Config {
      * Get the field for a specific config node and instance<br>
      * Note: As expiry can have multiple blocks there will be multiple instances
      *
-     * @param split
-     *            the node (split by period)
-     * @param instance
-     *            the instance
+     * @param split    the node (split by period)
+     * @param instance the instance
      * @return
      */
     private Field getField(String[] split, Object instance) {
@@ -226,7 +220,7 @@ public class Config {
             return field;
         } catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {
             Bukkit.getLogger().log(Level.WARNING, "[AntiRelog] Invalid config field: {0} for {1}",
-                    new Object[] { String.join(".", split), toNodeName(instance.getClass().getSimpleName()) });
+                        new Object[] { String.join(".", split), toNodeName(instance.getClass().getSimpleName()) });
             return null;
         }
     }
@@ -234,8 +228,7 @@ public class Config {
     /**
      * Get the instance for a specific config node
      *
-     * @param split
-     *            the node (split by period)
+     * @param split the node (split by period)
      * @return The instance or null
      */
     private Object getInstance(String[] split, Class<?> root) {

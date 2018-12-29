@@ -18,7 +18,7 @@ import ru.leymooo.config.Settings;
 public class Main extends JavaPlugin {
 
     private PlayerStorage storage;
-    private boolean is188;
+    private boolean       is188;
 
     @Override
     public void onEnable() {

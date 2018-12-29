@@ -21,23 +21,23 @@ public class PlayerStorage {
         Integer time = playersInPvp.getOrDefault(p, 0);
         playersInPvp.replace(p, time - 1);
     }
-    
+
     public void removePlayerPvP(Player p) {
         playersInPvp.remove(p);
     }
-    
+
     public boolean isInPvP(Player p) {
         return playersInPvp.containsKey(p);
     }
-    
+
     public int getPlayerPvPTime(Player p) {
         return playersInPvp.getOrDefault(p, 0);
     }
-    
+
     public Set<Player> getPlayersInPvp() {
         return new HashSet<>(playersInPvp.keySet());
     }
-    
+
     public void clear() {
         playersInPvp.clear();
     }

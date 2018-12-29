@@ -4,18 +4,16 @@ import org.bukkit.entity.Player;
 
 import ru.leymooo.config.Settings;
 
-
 public class TitlesUtils {
-    
+
     private static String[][] titles = new String[2][2];
-    private static boolean is111;
-    
-    
+    private static boolean    is111;
+
     public static void init(boolean is111) {
         TitlesUtils.is111 = is111;
         createTitles();
     }
-    
+
     public static void sendTitles(Player p, boolean end) {
         if (Settings.IMP.TITLES_ENABLED) {
             int index = end ? 1 : 0;

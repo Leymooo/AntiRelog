@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 
 import org.bukkit.entity.Player;
 
+import ru.leymooo.config.Settings;
+
 public class ActionBarUtils {
 
     private static Class<?> craftPlayerClass;
@@ -13,11 +15,11 @@ public class ActionBarUtils {
     private static Class<?> packetPlayOutChat;
     private static Class<?> packetClass;
     private static Class<?> chatMessageTypeClass;
-    private static Object chatMessageType;
-    private static String nmsver;
+    private static Object   chatMessageType;
+    private static String   nmsver;
 
-    private static boolean is112;
-    
+    private static boolean  is112;
+
     public static void init(String ver) {
         is112 = ver.startsWith("v1_12_R") || ver.startsWith("v1_13_R") || ver.startsWith("v1_14_R");
         nmsver = ver;
@@ -39,15 +41,18 @@ public class ActionBarUtils {
             e.printStackTrace();
         }
     }
+
     public static void sendAction(Player player, String message) {
-        if (!player.isOnline()) {
-            return; 
+        if (!player.isOnline() || !Settings.IMP.ACTIONBAR_ENABLED) {
+            return;
         }
         message = Utils.translate(message);
         try {
             Object craftPlayer = craftPlayerClass.cast(player);
             Object nmsMessage = chatComponentTextClass.getConstructor(String.class).newInstance(message);
-            Object playOutChat = !is112 ?packetPlayOutChat.getConstructor(iChatBaseComponentClass, byte.class).newInstance(nmsMessage, (byte) 2) :packetPlayOutChat.getConstructor(new Class<?>[]{iChatBaseComponentClass, chatMessageTypeClass}).newInstance(nmsMessage, chatMessageType);
+            Object playOutChat = !is112 ? packetPlayOutChat.getConstructor(iChatBaseComponentClass, byte.class).newInstance(nmsMessage, (byte) 2)
+                        : packetPlayOutChat.getConstructor(new Class<?>[] { iChatBaseComponentClass, chatMessageTypeClass })
+                                    .newInstance(nmsMessage, chatMessageType);
             Method getNmsPlayerMethod = craftPlayerClass.getDeclaredMethod("getHandle");
             Object nmsPlayer = getNmsPlayerMethod.invoke(craftPlayer);
             Field playerConnectionField = nmsPlayer.getClass().getDeclaredField("playerConnection");

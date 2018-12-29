@@ -21,12 +21,12 @@ public class EnderPearlLaunch implements Listener {
 
     private Map<Player, Long> perlCooldown = new HashMap<Player, Long>();
 
-    private Material ENDER_PEARL = Material.matchMaterial("ENDER_PEARL");
+    private Material          ENDER_PEARL  = Material.matchMaterial("ENDER_PEARL");
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPerlLaunch(ProjectileLaunchEvent e) {
         if (Settings.IMP.ENDER_PEARL_COOLDOWN > 0 && e.getEntityType() == EntityType.ENDER_PEARL
-                && e.getEntity().getShooter() instanceof Player) {
+                    && e.getEntity().getShooter() instanceof Player) {
             Player p = (Player) e.getEntity().getShooter();
             if (!p.hasPermission("antirelog.bypass") && !Settings.IMP.DISABLED_WORLDS.contains(p.getWorld().getName().toLowerCase())) {
                 perlCooldown.put(p, System.currentTimeMillis());
@@ -38,12 +38,12 @@ public class EnderPearlLaunch implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (Settings.IMP.ENDER_PEARL_COOLDOWN > 0 && e.hasItem() && e.getItem().getType() == ENDER_PEARL
-                    && !e.getPlayer().hasPermission("antirelog.bypass") && perlCooldown.containsKey(e.getPlayer())) {
+                        && !e.getPlayer().hasPermission("antirelog.bypass") && perlCooldown.containsKey(e.getPlayer())) {
                 long left = System.currentTimeMillis() - perlCooldown.get(e.getPlayer());
                 if (left <= (Settings.IMP.ENDER_PEARL_COOLDOWN * 1000)) {
                     e.setCancelled(true);
                     Utils.sendMessage(Settings.IMP.MESSAGES.ENDER_PEARL_DISABLED.replace("%time%",
-                            Math.round(Settings.IMP.ENDER_PEARL_COOLDOWN - (left / 1000)) + ""), e.getPlayer());
+                                Math.round(Settings.IMP.ENDER_PEARL_COOLDOWN - (left / 1000)) + ""), e.getPlayer());
                 }
             }
         }

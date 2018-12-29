@@ -17,7 +17,7 @@ import ru.leymooo.config.Settings;
 public class EntityEvents extends PvPUtils implements Listener {
 
     private boolean is188;
-    
+
     public EntityEvents(PlayerStorage playerStorage, boolean is188) {
         super(playerStorage);
         this.is188 = is188;
@@ -35,7 +35,7 @@ public class EntityEvents extends PvPUtils implements Listener {
             e.setCancelled(true);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCombust(EntityCombustByEntityEvent e) {
         if (!(e.getEntity() instanceof Player))
@@ -48,7 +48,7 @@ public class EntityEvents extends PvPUtils implements Listener {
             e.setCancelled(true);
         }
     }
-    
+
     private Player getDamager(Entity damager) {
         if (damager instanceof Player) {
             return (Player) damager;
