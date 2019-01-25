@@ -10,15 +10,16 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import ru.leymooo.antirelog.PlayerStorage;
 import ru.leymooo.antirelog.utils.PvPUtils;
 import ru.leymooo.antirelog.utils.Utils;
 import ru.leymooo.config.Settings;
 
-public class PotionSplash extends PvPUtils implements Listener {
+public class PotionSplash implements Listener {
 
-    public PotionSplash(PlayerStorage playerStorage) {
-        super(playerStorage);
+    private final PvPUtils pvpUtils;
+
+    public PotionSplash(PvPUtils pvpUtils) {
+        this.pvpUtils = pvpUtils;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -35,7 +36,7 @@ public class PotionSplash extends PvPUtils implements Listener {
                     } else {
                         for (PotionEffect ef : e.getPotion().getEffects()) {
                             if (ef.getType().equals(PotionEffectType.POISON)) {
-                                startPvp((Player) en, shooter);
+                                pvpUtils.startPvp((Player) en, shooter);
                             }
                         }
                     }

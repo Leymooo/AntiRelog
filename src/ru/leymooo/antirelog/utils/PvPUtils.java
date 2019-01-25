@@ -39,7 +39,7 @@ public class PvPUtils {
         if (Utils.checkPlayer(damager)) {
             return true;
         }
-        if (Settings.IMP.PVP_TIME != -1) {
+        if (Settings.IMP.PVP_TIME <= 0) {
             startPvp(player);
             startPvp(damager);
         }

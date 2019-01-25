@@ -10,16 +10,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import ru.leymooo.antirelog.PlayerStorage;
 import ru.leymooo.antirelog.utils.PvPUtils;
 import ru.leymooo.config.Settings;
 
-public class EntityEvents extends PvPUtils implements Listener {
+public class EntityEvents implements Listener {
 
-    private boolean is188;
+    private final PvPUtils pvpUtils;
+    private final boolean  is188;
 
-    public EntityEvents(PlayerStorage playerStorage, boolean is188) {
-        super(playerStorage);
+    public EntityEvents(PvPUtils pvpUtils, boolean is188) {
+        this.pvpUtils = pvpUtils;
         this.is188 = is188;
     }
 
@@ -31,7 +31,7 @@ public class EntityEvents extends PvPUtils implements Listener {
         if (Settings.IMP.DISABLED_WORLDS.contains(player.getWorld().getName().toLowerCase()))
             return;
         Player damager = getDamager(e.getDamager());
-        if (damager != null && damager != player && checkPlayerOrStartPvp(player, damager)) {
+        if (damager != null && damager != player && pvpUtils.checkPlayerOrStartPvp(player, damager)) {
             e.setCancelled(true);
         }
     }
@@ -44,7 +44,7 @@ public class EntityEvents extends PvPUtils implements Listener {
         if (Settings.IMP.DISABLED_WORLDS.contains(player.getWorld().getName().toLowerCase()))
             return;
         Player damager = getDamager(e.getCombuster());
-        if (damager != null && damager != player && checkPlayerOrStartPvp(player, damager)) {
+        if (damager != null && damager != player && pvpUtils.checkPlayerOrStartPvp(player, damager)) {
             e.setCancelled(true);
         }
     }

@@ -14,22 +14,23 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import ru.leymooo.antirelog.PlayerStorage;
 import ru.leymooo.antirelog.utils.BossBarUtils;
 import ru.leymooo.antirelog.utils.PvPUtils;
 import ru.leymooo.antirelog.utils.Utils;
 import ru.leymooo.config.Settings;
 import ru.leymooo.config.Settings.KICK;
 
-public class PvPListener extends PvPUtils implements Listener {
+public class PvPListener implements Listener {
 
-    public PvPListener(PlayerStorage playerStorage) {
-        super(playerStorage);
+    private final PvPUtils pvpUtils;
+
+    public PvPListener(PvPUtils pvpUtils) {
+        this.pvpUtils = pvpUtils;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
-        if (getPlayerStorage().isInPvP(e.getPlayer())) {
+        if (pvpUtils.getPlayerStorage().isInPvP(e.getPlayer())) {
             e.setCancelled(true);
             Utils.sendMessage(Settings.IMP.MESSAGES.CHAT_DISABLED, e.getPlayer());
         }
@@ -37,7 +38,7 @@ public class PvPListener extends PvPUtils implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onKick(PlayerKickEvent e) {
-        if (!getPlayerStorage().isInPvP(e.getPlayer())) {
+        if (!pvpUtils.getPlayerStorage().isInPvP(e.getPlayer())) {
             return;
         }
         KICK kick = Settings.IMP.KICK;
@@ -63,19 +64,19 @@ public class PvPListener extends PvPUtils implements Listener {
         if (killed) {
             onPvPLeave(e.getPlayer());
         }
-        getPlayerStorage().removePlayerPvP(e.getPlayer());
+        pvpUtils.getPlayerStorage().removePlayerPvP(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
-        if (Settings.IMP.KILL_ON_LEAVE && getPlayerStorage().isInPvP(e.getPlayer())) {
+        if (Settings.IMP.KILL_ON_LEAVE && pvpUtils.getPlayerStorage().isInPvP(e.getPlayer())) {
             e.getPlayer().setHealth(0);
             onPvPLeave(e.getPlayer());
         }
         if (Settings.IMP.REMOVE_LEAVE_MESSAGE) {
             e.setQuitMessage(null);
         }
-        getPlayerStorage().removePlayerPvP(e.getPlayer());
+        pvpUtils.getPlayerStorage().removePlayerPvP(e.getPlayer());
         BossBarUtils.setNewBossBar(e.getPlayer(), 0);
     }
 
@@ -84,7 +85,7 @@ public class PvPListener extends PvPUtils implements Listener {
         if (Settings.IMP.REMOVE_DEATH_MESSAGE) {
             e.setDeathMessage(null);
         }
-        getPlayerStorage().removePlayerPvP(e.getEntity());
+        pvpUtils.getPlayerStorage().removePlayerPvP(e.getEntity());
         BossBarUtils.setNewBossBar(e.getEntity(), 0);
     }
 

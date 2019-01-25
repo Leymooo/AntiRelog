@@ -12,12 +12,13 @@ import ru.leymooo.antirelog.listeners.PotionSplash;
 import ru.leymooo.antirelog.listeners.PvPListener;
 import ru.leymooo.antirelog.utils.ActionBarUtils;
 import ru.leymooo.antirelog.utils.BossBarUtils;
+import ru.leymooo.antirelog.utils.PvPUtils;
 import ru.leymooo.antirelog.utils.TitlesUtils;
 import ru.leymooo.config.Settings;
 
 public class Main extends JavaPlugin {
 
-    private PlayerStorage storage;
+    private PvPUtils pvpUtils;
     private boolean       is188;
 
     @Override
@@ -32,14 +33,14 @@ public class Main extends JavaPlugin {
         }
         TitlesUtils.init(is111);
 
-        storage = new PlayerStorage();
-        Bukkit.getPluginManager().registerEvents(new PvPListener(storage), this);
-        Bukkit.getPluginManager().registerEvents(new AppleEat(), this);
-        Bukkit.getPluginManager().registerEvents(new EnderPearlLaunch(), this);
-        Bukkit.getPluginManager().registerEvents(new EntityEvents(storage, is188), this);
-        Bukkit.getPluginManager().registerEvents(new PotionSplash(storage), this);
+        pvpUtils = new PvPUtils(new PlayerStorage());
+        Bukkit.getPluginManager().registerEvents(new PvPListener(pvpUtils), this);
+        Bukkit.getPluginManager().registerEvents(new AppleEat(pvpUtils.getPlayerStorage()), this);
+        Bukkit.getPluginManager().registerEvents(new EnderPearlLaunch(pvpUtils.getPlayerStorage()), this);
+        Bukkit.getPluginManager().registerEvents(new EntityEvents(pvpUtils, is188), this);
+        Bukkit.getPluginManager().registerEvents(new PotionSplash(pvpUtils), this);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new PvPTask(storage), 20, 20);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new PvPTask(pvpUtils.getPlayerStorage()), 20, 20);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class Main extends JavaPlugin {
         if (!is188) {
             BossBarUtils.clearBossBars();
         }
-        storage.clear();
+        pvpUtils.getPlayerStorage().clear();
     }
 
 }

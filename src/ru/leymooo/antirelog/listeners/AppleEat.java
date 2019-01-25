@@ -12,40 +12,45 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import ru.leymooo.antirelog.PlayerStorage;
 import ru.leymooo.antirelog.utils.Utils;
 import ru.leymooo.config.Settings;
 
 public class AppleEat implements Listener {
 
-    private boolean           is113            = Material.matchMaterial("ENCHANTED_GOLDEN_APPLE") != null;
+    private final boolean           is113            = Material.matchMaterial("ENCHANTED_GOLDEN_APPLE") != null;
+    private final Material          GOLDEN_APPLE     = Material.matchMaterial("GOLDEN_APPLE");
+    private final Map<Player, Long> appleCooldown    = new HashMap<Player, Long>();
+    private final Map<Player, Long> encAppleCooldown = new HashMap<Player, Long>();
+    private final PlayerStorage     playerStorage;
 
-    private Material          GOLDEN_APPLE     = Material.matchMaterial("GOLDEN_APPLE");
-
-    private Map<Player, Long> appleCooldown    = new HashMap<Player, Long>();
-    private Map<Player, Long> encAppleCooldown = new HashMap<Player, Long>();
+    public AppleEat(PlayerStorage playerStorage) {
+        this.playerStorage = playerStorage;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onAppleEat(PlayerItemConsumeEvent e) {
         ItemStack item = e.getItem();
         if (item.getType() == GOLDEN_APPLE || (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE)) {
-            boolean isEnc = (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE) || item.getDurability() >= 1;
-            long cd = isEnc ? Settings.IMP.ENCHANTED_GOLDEN_APPLE_COOLDOWN : Settings.IMP.GOLDEN_APPLE_COOLDOWN;
+            boolean isEnchanted = (is113 && item.getType() == Material.ENCHANTED_GOLDEN_APPLE) || item.getDurability() >= 1;
+            long cd = isEnchanted ? Settings.IMP.ENCHANTED_GOLDEN_APPLE_COOLDOWN : Settings.IMP.GOLDEN_APPLE_COOLDOWN;
             if (Settings.IMP.DISABLED_WORLDS.contains(e.getPlayer().getWorld().getName().toLowerCase())
-                        || e.getPlayer().hasPermission("antirelog.bypass") || cd <= -1) {
+                        || e.getPlayer().hasPermission("antirelog.bypass") || cd <= 0) {
                 return;
 
             }
-            Map<Player, Long> playerMap = isEnc ? encAppleCooldown : appleCooldown;
-            if (!playerMap.containsKey(e.getPlayer())) {
-                return;
+            Map<Player, Long> playerMap = isEnchanted ? encAppleCooldown : appleCooldown;
+            if (playerMap.containsKey(e.getPlayer())) {
+                long left = System.currentTimeMillis() - playerMap.get(e.getPlayer());
+                boolean active = Settings.IMP.PVP_TIME > 0 ? playerStorage.isInPvP(e.getPlayer()) : true;
+                if (active && (left <= (cd * 1000))) {
+                    e.setCancelled(true);
+                    Utils.sendMessage(Settings.IMP.MESSAGES.APPLE_DISABLED.replace("%time%", Math.round(cd - (left / 1000)) + ""),
+                                e.getPlayer());
+                    return;
+                }
             }
-            long left = System.currentTimeMillis() - playerMap.get(e.getPlayer());
-            if (left <= (cd * 1000)) {
-                e.setCancelled(true);
-                Utils.sendMessage(Settings.IMP.MESSAGES.APPLE_DISABLED.replace("%time%", Math.round(cd - (left / 1000)) + ""), e.getPlayer());
-            } else {
-                playerMap.put(e.getPlayer(), System.currentTimeMillis());
-            }
+            playerMap.put(e.getPlayer(), System.currentTimeMillis());
 
         }
 
