@@ -1,0 +1,11 @@
+name: Antirelog
+version: ${project.version}
+main: ru.leymooo.antirelog.Antirelog
+api-version: 1.13
+prefix: Antirelog
+softdepend: [Essentials, SuperVanish, PremiumVanish, VanishNoPacket, WorldGuard]
+authors: [Leymooo]
+description: Antirelog
+website: http://rubukkit.org/threads/125331/
+commands:
+  antirelog:
