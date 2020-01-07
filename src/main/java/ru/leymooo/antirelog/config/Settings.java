@@ -14,7 +14,7 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.0";
+    private String configVersion = "1.1";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
@@ -34,13 +34,17 @@ public class Settings extends Configuration {
     @Comment("Убивать ли игрока если его кикнули во время пвп?")
     @ConfigKey("kill-on-kick")
     private boolean killOnKick = true;
-    @Comment("Какой текст должен быть впричине кика, чтобы его убило. Если пусто, то будет убивать всегда")
+    @Comment("Выполнять ли команды, если игрока кикнули во время пвп?")
+    @ConfigKey("run-commands-on-kick")
+    private boolean runCommandsOnKick = true;
+    @Comment("Какой текст должен быть впричине кика, чтобы его убило/выполнились команды. Если пусто, то будет убивать/выполняться " +
+            "команды всегда")
     @ConfigKey("kick-messages")
     private List<String> kickMessages = Arrays.asList("спам", "реклама", "анти-чит");
-    @Comment({"Какие команды запускать от консоли при выходе игрока во время пвп?", "- command1", "- command2 %player%"})
+    @Comment({"Какие команды запускать от консоли при выходе игрока во время пвп?", "commands-on-leave:", "- command1", "- command2 " +
+            "%player%"})
     @ConfigKey("commands-on-leave")
     private List<String> commandsOnLeave = new ArrayList<>(0);
-
     @Comment("Отключать ли у игрока который ударил FLY, GM, GOD, VANISH?")
     @ConfigKey("disable-powerups")
     private boolean disablePowerups = true;
@@ -100,6 +104,10 @@ public class Settings extends Configuration {
 
     public boolean isKillOnKick() {
         return killOnKick;
+    }
+
+    public boolean isRunCommandsOnKick() {
+        return runCommandsOnKick;
     }
 
     public List<String> getKickMessages() {

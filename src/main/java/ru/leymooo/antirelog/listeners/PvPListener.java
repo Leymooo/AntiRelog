@@ -88,26 +88,35 @@ public class PvPListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
-        if (!settings.isKillOnKick() || !pvpManager.isInPvP(player)) {
+        if (!pvpManager.isInPvP(player)) {
             return;
         }
+
+        pvpManager.pvpStoppedSilent(player);
 
         if (settings.getKickMessages().isEmpty()) {
-            onPvPLeave(player);
-            e.getPlayer().setHealth(0);
+            kickedInPvp(player);
             return;
         }
-
+        if (e.getReason() == null) {
+            return;
+        }
         String reason = ChatColor.stripColor(e.getReason());
-        if (reason == null) {
-            return;
-        }
         for (String killReason : settings.getKickMessages()) {
             if (reason.contains(killReason)) {
-                onPvPLeave(player);
-                e.getPlayer().setHealth(0);
+                kickedInPvp(player);
                 return;
             }
+        }
+    }
+
+    private void kickedInPvp(Player player) {
+        if (settings.isKillOnKick()) {
+            player.setHealth(0);
+            sendLeavedInPvpMessage(player);
+        }
+        if (settings.isRunCommandsOnKick()) {
+            runCommands(player);
         }
     }
 
@@ -116,13 +125,15 @@ public class PvPListener implements Listener {
         if (settings.isHideLeaveMessage()) {
             e.setQuitMessage(null);
         }
+        pvpManager.pvpStoppedSilent(e.getPlayer());
         if (pvpManager.isInPvP(e.getPlayer())) {
             if (settings.isKillOnLeave()) {
-                onPvPLeave(e.getPlayer());
+                sendLeavedInPvpMessage(e.getPlayer());
                 e.getPlayer().setHealth(0);
             } else {
                 pvpManager.pvpStoppedSilent(e.getPlayer());
             }
+            runCommands(e.getPlayer());
         }
     }
 
@@ -141,17 +152,19 @@ public class PvPListener implements Listener {
         }
     }
 
-    private void onPvPLeave(Player p) {
-        pvpManager.pvpStoppedSilent(p);
+    private void sendLeavedInPvpMessage(Player p) {
         String message = Utils.color(messages.getPvpLeaved()).replace("%player%", p.getName());
         if (!message.isEmpty()) {
             for (Player pl : Bukkit.getOnlinePlayers()) {
                 pl.sendMessage(message);
             }
         }
+    }
+
+    private void runCommands(Player leaved) {
         if (!settings.getCommandsOnLeave().isEmpty()) {
             settings.getCommandsOnLeave().forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                    Utils.color(command).replace("%player%", p.getName())));
+                    Utils.color(command).replace("%player%", leaved.getName())));
         }
     }
 

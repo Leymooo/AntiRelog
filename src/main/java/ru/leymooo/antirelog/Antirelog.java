@@ -9,11 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import ru.leymooo.annotatedyaml.ConfigurationProvider;
 import ru.leymooo.annotatedyaml.provider.BukkitConfigurationProvider;
+import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.listeners.CooldownListener;
 import ru.leymooo.antirelog.listeners.PvPListener;
-import ru.leymooo.antirelog.manager.CooldownManager;
-import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.listeners.WorldGuardListener;
+import ru.leymooo.antirelog.manager.CooldownManager;
 import ru.leymooo.antirelog.manager.PvPManager;
 
 import java.io.File;
@@ -63,6 +63,9 @@ public class Antirelog extends JavaPlugin {
             settings.save();
         } else if (provider.isFileSuccessfullyLoaded()) {
             settings.load();
+            if (((String) provider.get("config-version")).equals("1.0")) {
+                settings.save();
+            }
         } else {
             getLogger().warning("Can't load settings from file, using default...");
         }
