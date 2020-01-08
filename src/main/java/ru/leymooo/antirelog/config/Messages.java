@@ -83,4 +83,24 @@ public class Messages extends Configuration {
     public String getEnderPearlDisabled() {
         return enderPearlDisabled;
     }
+
+
+    @Override
+    public String toString() {
+        return "Messages{" +
+                "pvpStarted='" + pvpStarted + '\'' +
+                ", pvpStartedTitle='" + pvpStartedTitle + '\'' +
+                ", pvpStartedSubtitle='" + pvpStartedSubtitle + '\'' +
+                ", pvpStopped='" + pvpStopped + '\'' +
+                ", pvpStoppedTitle='" + pvpStoppedTitle + '\'' +
+                ", pvpStoppedSubtitle='" + pvpStoppedSubtitle + '\'' +
+                ", pvpStoppedActionbar='" + pvpStoppedActionbar + '\'' +
+                ", inPvpBossbar='" + inPvpBossbar + '\'' +
+                ", inPvpActionbar='" + inPvpActionbar + '\'' +
+                ", pvpLeaved='" + pvpLeaved + '\'' +
+                ", commandsDisabled='" + commandsDisabled + '\'' +
+                ", appleDisabled='" + appleDisabled + '\'' +
+                ", enderPearlDisabled='" + enderPearlDisabled + '\'' +
+                '}';
+    }
 }

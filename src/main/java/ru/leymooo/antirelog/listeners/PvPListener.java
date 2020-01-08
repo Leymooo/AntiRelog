@@ -125,8 +125,8 @@ public class PvPListener implements Listener {
         if (settings.isHideLeaveMessage()) {
             e.setQuitMessage(null);
         }
-        pvpManager.pvpStoppedSilent(e.getPlayer());
         if (pvpManager.isInPvP(e.getPlayer())) {
+            pvpManager.pvpStoppedSilent(e.getPlayer());
             if (settings.isKillOnLeave()) {
                 sendLeavedInPvpMessage(e.getPlayer());
                 e.getPlayer().setHealth(0);

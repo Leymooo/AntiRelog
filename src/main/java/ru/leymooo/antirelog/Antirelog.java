@@ -42,6 +42,7 @@ public class Antirelog extends JavaPlugin {
         if (args.length > 0 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("antirelog.reload")) {
             reloadSettings();
             sender.sendMessage("§aReloaded");
+            getLogger().info(settings.toString());
         }
         return true;
     }

@@ -149,4 +149,30 @@ public class Settings extends Configuration {
     public List<String> getDisabledWorlds() {
         return disabledWorlds;
     }
+
+
+    @Override
+    public String toString() {
+        return "Settings{" +
+                "configVersion='" + configVersion + '\'' +
+                ", messages=" + messages +
+                ", goldenAppleCooldown=" + goldenAppleCooldown +
+                ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
+                ", enderPearlCooldown=" + enderPearlCooldown +
+                ", pvpTime=" + pvpTime +
+                ", killOnLeave=" + killOnLeave +
+                ", killOnKick=" + killOnKick +
+                ", runCommandsOnKick=" + runCommandsOnKick +
+                ", kickMessages=" + kickMessages +
+                ", commandsOnLeave=" + commandsOnLeave +
+                ", disablePowerups=" + disablePowerups +
+                ", disableTeleportsInPvp=" + disableTeleportsInPvp +
+                ", ignoreWorldGuard=" + ignoreWorldGuard +
+                ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +
+                ", hideJoinMessage=" + hideJoinMessage +
+                ", hideLeaveMessage=" + hideLeaveMessage +
+                ", hideDeathMessage=" + hideDeathMessage +
+                ", disabledWorlds=" + disabledWorlds +
+                '}';
+    }
 }
