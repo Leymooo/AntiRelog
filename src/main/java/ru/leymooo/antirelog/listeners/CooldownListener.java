@@ -66,7 +66,7 @@ public class CooldownListener implements Listener {
         if (settings.getEnderPearlCooldown() > 0 && e.getEntityType() == EntityType.ENDER_PEARL && e.getEntity().getShooter() instanceof Player) {
             Player p = (Player) e.getEntity().getShooter();
             if (pvpManager.canStartPvP(p)) {
-                cooldownManager.addCooldown(p, CooldownType.ENDER_PEARD);
+                cooldownManager.addCooldown(p, CooldownType.ENDER_PEARL);
             }
         }
     }
@@ -77,10 +77,10 @@ public class CooldownListener implements Listener {
             return;
         }
 
-        if (cooldownManager.hasCooldown(e.getPlayer(), CooldownType.ENDER_PEARD, settings.getEnderPearlCooldown() * 1000)) {
+        if (cooldownManager.hasCooldown(e.getPlayer(), CooldownType.ENDER_PEARL, settings.getEnderPearlCooldown() * 1000)) {
             boolean isActive = !pvpManager.isPvPModeEnabled() || pvpManager.isInPvP(e.getPlayer());
             if (isActive && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-                long remaining = cooldownManager.getRemaining(e.getPlayer(), CooldownType.ENDER_PEARD,
+                long remaining = cooldownManager.getRemaining(e.getPlayer(), CooldownType.ENDER_PEARL,
                         settings.getEnderPearlCooldown() * 1000);
                 int remainingInt = (int) TimeUnit.MILLISECONDS.toSeconds(remaining);
                 e.setCancelled(true);

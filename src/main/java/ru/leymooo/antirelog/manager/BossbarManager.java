@@ -25,15 +25,18 @@ public class BossbarManager {
         bossBars.clear();
         if (VersionUtils.isVersion(9) && settings.getPvpTime() > 0) {
             String title = Utils.color(settings.getMessages().getInPvpBossbar());
-            double add = 1d / (double) settings.getPvpTime();
-            double progress = add;
-            for (int i = 1; i <= settings.getPvpTime(); i++) {
-                String actualTitle = Utils.replaceTime(title, i);
-                BossBar bar = Bukkit.createBossBar(actualTitle, BarColor.RED, BarStyle.SOLID);
-                progress += add;
-                bossBars.put(i, bar);
-                if (progress > 1.000d) {
-                    progress = 1.000d;
+            if (!title.isEmpty()) {
+                double add = 1d / (double) settings.getPvpTime();
+                double progress = add;
+                for (int i = 1; i <= settings.getPvpTime(); i++) {
+                    String actualTitle = Utils.replaceTime(title, i);
+                    BossBar bar = Bukkit.createBossBar(actualTitle, BarColor.RED, BarStyle.SOLID);
+                    bar.setProgress(progress);
+                    progress += add;
+                    bossBars.put(i, bar);
+                    if (progress > 1.000d) {
+                        progress = 1.000d;
+                    }
                 }
             }
         }

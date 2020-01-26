@@ -14,7 +14,7 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.1";
+    private String configVersion = "1.2";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
@@ -22,7 +22,7 @@ public class Settings extends Configuration {
     @Comment("Кулдавн для зачарованых золотых яблок во время пвп.")
     @ConfigKey("enchanted-golden-apple-cooldown")
     private int enchantedGoldenAppleCooldown = 60;
-    @Comment("Кулдавн для обычных золотых яблок во время пвп.")
+    @Comment("Кулдавн для жемчугов края во время пвп.")
     @ConfigKey("ender-pearl-cooldown")
     private int enderPearlCooldown = 15;
     @Comment("Длительность пвп")

@@ -6,12 +6,12 @@
 
     <groupId>ru.leymooo</groupId>
     <artifactId>antirelog</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <packaging>jar</packaging>
 
-    <name>Antirelog</name>
+    <name>AntiRelog</name>
 
-    <description>Antirelog</description>
+    <description>AntiRelog</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

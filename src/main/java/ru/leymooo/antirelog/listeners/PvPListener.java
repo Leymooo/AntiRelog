@@ -79,8 +79,10 @@ public class PvPListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent e) {
         if (pvpManager.isInPvP(e.getPlayer())) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(Utils.color(Utils.replaceTime(messages.getCommandsDisabled(),
-                    pvpManager.getTimeRemainingInPvP(e.getPlayer()))));
+            String message = Utils.color(messages.getCommandsDisabled());
+            if (!message.isEmpty()) {
+                e.getPlayer().sendMessage(Utils.replaceTime(message, pvpManager.getTimeRemainingInPvP(e.getPlayer())));
+            }
         }
     }
 
