@@ -14,20 +14,34 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.2";
+    private String configVersion = "1.3";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
     private int goldenAppleCooldown = 30;
-    @Comment("Кулдавн для зачарованых золотых яблок во время пвп.")
+    @Comment({"Кулдавн для зачарованых золотых яблок во время пвп.", "Значение 0 отключает кулдаун; -1 отключает использование во время " +
+            "пвп"})
     @ConfigKey("enchanted-golden-apple-cooldown")
     private int enchantedGoldenAppleCooldown = 60;
-    @Comment("Кулдавн для жемчугов края во время пвп.")
+    @Comment({"Кулдавн для жемчугов края во время пвп.", "Значение 0 отключает кулдаун; -1 отключает использование во время " +
+            "пвп"})
     @ConfigKey("ender-pearl-cooldown")
     private int enderPearlCooldown = 15;
+    @Comment({"Кулдавн для корусов во время пвп.", "https://minecraft-ru.gamepedia.com/Плод_коруса", "Значение 0 отключает кулдаун; -1 " +
+            "отключает использование во время пвп"})
+    @ConfigKey("chorus-cooldown")
+    private int сhorusCooldown = 7;
     @Comment("Длительность пвп")
     @ConfigKey("pvp-time")
     private int pvpTime = 12;
+    @Comment("Отключить ли возможность писать команды в пвп?")
+    @ConfigKey("disable-commands-in-pvp")
+    private boolean disableCommandsInPvp = true;
+    @Comment({"Команды которые можно писать во время пвп", "Команды писать без '/' (кол-во '/' - 1)", "Плагин будет пытаться сам " +
+            "определить алисы для команд (msg,tell,m), но для некоторых команд возможно придется самому прописать алиасы",
+            "commands-whitelist:", "- command", "- command2", "- /expand"})
+    @ConfigKey("commands-whitelist")
+    private List<String> whiteListedCommands = new ArrayList<>(0);
     @Comment("Убивать ли игрока если он вышел во время пвп?")
     @ConfigKey("kill-on-leave")
     private boolean killOnLeave = true;
@@ -48,7 +62,12 @@ public class Settings extends Configuration {
     @Comment("Отключать ли у игрока который ударил FLY, GM, GOD, VANISH?")
     @ConfigKey("disable-powerups")
     private boolean disablePowerups = true;
-    @Comment("Отключать ли возможность телепортироваться во время пвп? (Отключает любые способы кроме жемчуга края)")
+    @Comment({"Какие команды выполнять, если были отключены усиления у игрока", "Данную настройку можно использовать например для того, " +
+            "чтобы наложить на игрока отрицательный эффект, если он начал пвп в ГМ/ФЛАЕ/и тд",
+            "commands-on-powerups-disable: ", "- command1 %player%", "- effect give %player% weakness 10"
+    })
+    private List<String> commandsOnPowerupsDisable = new ArrayList<>(0);
+    @Comment({"Отключать ли возможность телепортироваться во время пвп?"})
     @ConfigKey("disable-teleports-in-pvp")
     private boolean disableTeleportsInPvp = true;
     @Comment("Игнорировать ли PVP deny во время пвп между игроками?")
@@ -94,8 +113,24 @@ public class Settings extends Configuration {
         return enderPearlCooldown;
     }
 
+    public int getСhorusCooldown() {
+        return сhorusCooldown;
+    }
+
     public int getPvpTime() {
         return pvpTime;
+    }
+
+    public boolean isDisableCommandsInPvp() {
+        return disableCommandsInPvp;
+    }
+
+    public List<String> getCommandsOnPowerupsDisable() {
+        return commandsOnPowerupsDisable;
+    }
+
+    public List<String> getWhiteListedCommands() {
+        return whiteListedCommands;
     }
 
     public boolean isKillOnLeave() {
@@ -159,13 +194,17 @@ public class Settings extends Configuration {
                 ", goldenAppleCooldown=" + goldenAppleCooldown +
                 ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
                 ", enderPearlCooldown=" + enderPearlCooldown +
+                ", сhorusCooldown=" + сhorusCooldown +
                 ", pvpTime=" + pvpTime +
+                ", disableCommandsInPvp=" + disableCommandsInPvp +
+                ", whiteListedCommands=" + whiteListedCommands +
                 ", killOnLeave=" + killOnLeave +
                 ", killOnKick=" + killOnKick +
                 ", runCommandsOnKick=" + runCommandsOnKick +
                 ", kickMessages=" + kickMessages +
                 ", commandsOnLeave=" + commandsOnLeave +
                 ", disablePowerups=" + disablePowerups +
+                ", commandsOnPowerupsDisable=" + commandsOnPowerupsDisable +
                 ", disableTeleportsInPvp=" + disableTeleportsInPvp +
                 ", ignoreWorldGuard=" + ignoreWorldGuard +
                 ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +

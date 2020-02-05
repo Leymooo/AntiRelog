@@ -1,12 +1,11 @@
 package ru.leymooo.antirelog.manager;
 
-import com.earth2me.essentials.User;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import ru.leymooo.antirelog.Antirelog;
 import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.util.ActionBar;
+import ru.leymooo.antirelog.util.CommandMapUtils;
 import ru.leymooo.antirelog.util.Utils;
 import ru.leymooo.antirelog.util.VersionUtils;
 
@@ -20,13 +19,14 @@ public class PvPManager {
     private final Settings settings;
     private final Antirelog plugin;
     private final Map<Player, Integer> pvpMap = new HashMap<>();
-    private final VanishManager vanishManager;
+    private final PowerUpsManager powerUpsManager;
     private final BossbarManager bossbarManager;
+    private final Set<String> whiteListedCommands = new HashSet<>();
 
     public PvPManager(Settings settings, Antirelog plugin) {
         this.settings = settings;
         this.plugin = plugin;
-        this.vanishManager = new VanishManager(plugin);
+        this.powerUpsManager = new PowerUpsManager(settings);
         this.bossbarManager = new BossbarManager(settings);
         onPluginEnable();
     }
@@ -37,6 +37,17 @@ public class PvPManager {
     }
 
     public void onPluginEnable() {
+        whiteListedCommands.clear();
+        if (settings.isDisableCommandsInPvp() && !settings.getWhiteListedCommands().isEmpty()) {
+            settings.getWhiteListedCommands().forEach(wcommand -> {
+                Command command = CommandMapUtils.getCommand(wcommand);
+                whiteListedCommands.add(wcommand.toLowerCase());
+                if (command != null) {
+                    whiteListedCommands.add(command.getName().toLowerCase());
+                    command.getAliases().forEach(alias -> whiteListedCommands.add(alias.toLowerCase()));
+                }
+            });
+        }
         plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
             if (pvpMap.isEmpty()) {
                 return;
@@ -44,8 +55,8 @@ public class PvPManager {
             Set<Player> playersInPvp = new HashSet<>(pvpMap.keySet());
             for (Player player : playersInPvp) {
                 int timeRemaining = getTimeRemainingInPvP(player) - 1;
-                if (timeRemaining == 0) {
-                    pvpStopped(player);
+                if (timeRemaining <= 0) {
+                    stopPvP(player);
                 } else {
                     updatePvpMode(player, timeRemaining);
                 }
@@ -59,22 +70,26 @@ public class PvPManager {
     }
 
     public int getTimeRemainingInPvP(Player player) {
-        return pvpMap.get(player);
+        return pvpMap.getOrDefault(player, 0);
     }
 
     public void playerDamagedByPlayer(Player attacker, Player defender) {
         if (defender != attacker && attacker != null && defender != null) {
-            tryStartPvP(attacker);
-            tryStartPvP(defender);
+            tryStartPvP(attacker, true);
+            tryStartPvP(defender, false);
         }
     }
 
-    private void tryStartPvP(Player player) {
+    private void tryStartPvP(Player player, boolean attacker) {
         if (!canStartPvP(player)) {
             return;
         }
         if (!isPvPModeEnabled() && settings.isDisablePowerups()) {
-            disablePowerups(player);
+            if (attacker) {
+                powerUpsManager.disablePowerUpsWithRunCommands(player);
+            } else {
+                powerUpsManager.disablePowerUps(player);
+            }
             return;
         }
         if (!isPvPModeEnabled()) {
@@ -85,13 +100,16 @@ public class PvPManager {
             if (!message.isEmpty()) {
                 player.sendMessage(message);
             }
+            if (attacker && settings.isDisablePowerups()) {
+                powerUpsManager.disablePowerUpsWithRunCommands(player);
+            }
             sendTitles(player, true);
         }
         updatePvpMode(player, settings.getPvpTime());
     }
 
-    public void pvpStopped(Player player) {
-        pvpStoppedSilent(player);
+    public void stopPvP(Player player) {
+        stopPvPSilent(player);
         sendTitles(player, false);
         String message = Utils.color(settings.getMessages().getPvpStopped());
         if (!message.isEmpty()) {
@@ -103,9 +121,16 @@ public class PvPManager {
         }
     }
 
-    public void pvpStoppedSilent(Player player) {
+    public void stopPvPSilent(Player player) {
         pvpMap.remove(player);
         bossbarManager.clearBossbar(player);
+    }
+
+    public boolean isCommandWhiteListed(String command) {
+        if (whiteListedCommands.isEmpty()) {
+            return false; //all commands are blocked
+        }
+        return whiteListedCommands.contains(command.toLowerCase());
     }
 
     private void updatePvpMode(Player player, int newTime) {
@@ -116,7 +141,7 @@ public class PvPManager {
             sendActionBar(player, Utils.color(Utils.replaceTime(actionBar, newTime)));
         }
         if (settings.isDisablePowerups()) {
-            disablePowerups(player);
+            powerUpsManager.disablePowerUps(player);
         }
     }
 
@@ -139,7 +164,6 @@ public class PvPManager {
         ActionBar.sendAction(player, message);
     }
 
-
     public boolean isPvPModeEnabled() {
         return settings.getPvpTime() > 0;
     }
@@ -147,32 +171,4 @@ public class PvPManager {
     public boolean canStartPvP(Player player) {
         return !player.hasPermission("antirelog.bypass") && !settings.getDisabledWorlds().contains(player.getWorld().getName());
     }
-
-    private void disablePowerups(Player player) {
-        if (Bukkit.getDefaultGameMode() == GameMode.ADVENTURE) {
-            player.setGameMode(GameMode.ADVENTURE);
-        } else {
-            player.setGameMode(GameMode.SURVIVAL);
-        }
-        if (player.isFlying() || player.getAllowFlight()) {
-            player.setFlying(false);
-            player.setAllowFlight(false);
-        }
-        /*
-        if (player.getWalkSpeed() > 0.1f) {
-            player.setWalkSpeed(0.1f);
-        }
-         */
-        if (plugin.hasEssentialsPlugin()) {
-            User user = plugin.getEssentialsPlugin().getUser(player);
-            if (user.isVanished()) {
-                user.setVanished(false);
-            }
-            if (user.isGodModeEnabled()) {
-                user.setGodModeEnabled(false);
-            }
-        }
-        vanishManager.disableVanish(player);
-    }
-
 }

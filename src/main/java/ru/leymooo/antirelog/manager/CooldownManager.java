@@ -36,6 +36,7 @@ public class CooldownManager {
     public enum CooldownType {
         GOLDEN_APPLE,
         ENC_GOLDEN_APPLE,
-        ENDER_PEARL;
+        ENDER_PEARL,
+        CHORUS;
     }
 }

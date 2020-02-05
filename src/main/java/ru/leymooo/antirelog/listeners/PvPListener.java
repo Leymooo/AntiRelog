@@ -70,14 +70,28 @@ public class PvPListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent ev) {
-        if (settings.isDisableTeleportsInPvp() && ev.getCause() != TeleportCause.ENDER_PEARL && pvpManager.isInPvP(ev.getPlayer())) {
-            ev.setCancelled(true);
+
+        if (settings.isDisableTeleportsInPvp() && pvpManager.isInPvP(ev.getPlayer())) {
+            if ((VersionUtils.isVersion(9) && ev.getCause() == TeleportCause.CHORUS_FRUIT) || ev.getCause() == TeleportCause.ENDER_PEARL) {
+                return;
+            }
+            if (ev.getFrom().getWorld() != ev.getTo().getWorld()) {
+                ev.setCancelled(true);
+                return;
+            }
+            if (ev.getFrom().distanceSquared(ev.getTo()) > 50) { //50 ~ 7 blocks
+                ev.setCancelled(true);
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
-        if (pvpManager.isInPvP(e.getPlayer())) {
+        if (settings.isDisableCommandsInPvp() && pvpManager.isInPvP(e.getPlayer())) {
+            String command = e.getMessage().split(" ")[0].replaceFirst("/", "");
+            if (pvpManager.isCommandWhiteListed(command)) {
+                return;
+            }
             e.setCancelled(true);
             String message = Utils.color(messages.getCommandsDisabled());
             if (!message.isEmpty()) {
@@ -94,7 +108,7 @@ public class PvPListener implements Listener {
             return;
         }
 
-        pvpManager.pvpStoppedSilent(player);
+        pvpManager.stopPvPSilent(player);
 
         if (settings.getKickMessages().isEmpty()) {
             kickedInPvp(player);
@@ -128,12 +142,12 @@ public class PvPListener implements Listener {
             e.setQuitMessage(null);
         }
         if (pvpManager.isInPvP(e.getPlayer())) {
-            pvpManager.pvpStoppedSilent(e.getPlayer());
+            pvpManager.stopPvPSilent(e.getPlayer());
             if (settings.isKillOnLeave()) {
                 sendLeavedInPvpMessage(e.getPlayer());
                 e.getPlayer().setHealth(0);
             } else {
-                pvpManager.pvpStoppedSilent(e.getPlayer());
+                pvpManager.stopPvPSilent(e.getPlayer());
             }
             runCommands(e.getPlayer());
         }
@@ -144,7 +158,7 @@ public class PvPListener implements Listener {
         if (settings.isHideDeathMessage()) {
             e.setDeathMessage(null);
         }
-        pvpManager.pvpStoppedSilent(e.getEntity());
+        pvpManager.stopPvPSilent(e.getEntity());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

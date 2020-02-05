@@ -2,6 +2,7 @@ package ru.leymooo.antirelog;
 
 import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -31,7 +32,6 @@ import java.util.stream.Stream;
 
 public class Antirelog extends JavaPlugin {
     private Settings settings;
-    private Essentials essentialsPlugin;
     private PvPManager pvpManager;
     private CooldownManager cooldownManager;
 
@@ -155,19 +155,8 @@ public class Antirelog extends JavaPlugin {
         cooldownManager.clearAll();
     }
 
-    public boolean hasEssentialsPlugin() {
-        return essentialsPlugin != null;
-    }
-
-    public Essentials getEssentialsPlugin() {
-        return essentialsPlugin;
-    }
 
     private void detectPlugins() {
-        Plugin essentials = Bukkit.getPluginManager().getPlugin("Essentials");
-        if (essentials != null && essentials.isEnabled()) {
-            this.essentialsPlugin = (Essentials) essentials;
-        }
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             WorldGuardWrapper.getInstance().registerEvents(this);
             Bukkit.getPluginManager().registerEvents(new WorldGuardListener(settings, pvpManager), this);
