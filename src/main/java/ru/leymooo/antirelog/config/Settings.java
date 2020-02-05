@@ -66,6 +66,7 @@ public class Settings extends Configuration {
             "чтобы наложить на игрока отрицательный эффект, если он начал пвп в ГМ/ФЛАЕ/и тд",
             "commands-on-powerups-disable: ", "- command1 %player%", "- effect give %player% weakness 10"
     })
+    @ConfigKey("commands-on-powerups-disable")
     private List<String> commandsOnPowerupsDisable = new ArrayList<>(0);
     @Comment({"Отключать ли возможность телепортироваться во время пвп?"})
     @ConfigKey("disable-teleports-in-pvp")

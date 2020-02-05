@@ -29,7 +29,7 @@ public class Messages extends Configuration {
     @ConfigKey("commands-disabled")
     private String commandsDisabled = "&b&lВы не можете использовать команды в &e&lPvP&b&l. &b&lПодождите &a&l%time% &b&l%formated-sec%.";
     @ConfigKey("item-cooldown")
-    private String itemCooldown = "&b&lВы сможете использовать этот предмет через &a&l%time% &b&lсек.";
+    private String itemCooldown = "&b&lВы сможете использовать этот предмет через &a&l%time% &b&l%formated-sec%.";
     @ConfigKey("item-disabled-in-pvp")
     private String itemDisabledInPvp = "&b&lВы не можете использовать этот предмет в &e&lPVP &b&lрежиме";
     @ConfigKey("pvp-started-with-powerups")

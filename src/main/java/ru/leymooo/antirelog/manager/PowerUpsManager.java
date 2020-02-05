@@ -64,7 +64,6 @@ public class PowerUpsManager {
         }
         if (libsDisguises && DisguiseAPI.isSelfDisguised(player)) {
             DisguiseAPI.undisguiseToAll(player);
-            disabled = true;
         }
         return disabled;
     }
