@@ -83,9 +83,9 @@ public class PowerUpsManager {
         }
     }
 
-    private void detectPlugins() {
+    public void detectPlugins() {
         PluginManager pluginManager = Bukkit.getPluginManager();
-        vanishAPI = pluginManager.isPluginEnabled("SuperVanish") || pluginManager.isPluginEnabled("PremiumVanish");
+        this.vanishAPI = pluginManager.isPluginEnabled("SuperVanish") || pluginManager.isPluginEnabled("PremiumVanish");
         this.vanishNoPacket = pluginManager.isPluginEnabled("VanishNoPacket") ? (VanishPlugin) pluginManager.getPlugin("VanishNoPacket")
                 : null;
         this.essentials = pluginManager.isPluginEnabled("Essentials") ? (Essentials) pluginManager.getPlugin("Essentials") : null;
@@ -116,7 +116,9 @@ public class PowerUpsManager {
             CMIUser user = CMI.getInstance().getPlayerManager().getUser(player);
             if (user != null) {
                 if (user.isGod()) {
+                    CMI.getInstance().getNMS().changeGodMode(player, false);
                     user.setGod(false);
+                    user.setTgod(null);
                     disabled = true;
                 }
                 if (user.isVanished()) {
