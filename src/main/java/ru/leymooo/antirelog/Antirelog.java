@@ -1,13 +1,9 @@
 package ru.leymooo.antirelog;
 
-import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.FileUtil;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
 import ru.leymooo.annotatedyaml.ConfigurationProvider;
 import ru.leymooo.annotatedyaml.provider.BukkitConfigurationProvider;
@@ -15,7 +11,9 @@ import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.listeners.CooldownListener;
 import ru.leymooo.antirelog.listeners.PvPListener;
 import ru.leymooo.antirelog.listeners.WorldGuardListener;
+import ru.leymooo.antirelog.manager.BossbarManager;
 import ru.leymooo.antirelog.manager.CooldownManager;
+import ru.leymooo.antirelog.manager.PowerUpsManager;
 import ru.leymooo.antirelog.manager.PvPManager;
 
 import java.io.File;
@@ -161,5 +159,25 @@ public class Antirelog extends JavaPlugin {
             WorldGuardWrapper.getInstance().registerEvents(this);
             Bukkit.getPluginManager().registerEvents(new WorldGuardListener(settings, pvpManager), this);
         }
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public PvPManager getPvpManager() {
+        return pvpManager;
+    }
+
+    public PowerUpsManager getPowerUpsManager() {
+        return pvpManager.getPowerUpsManager();
+    }
+
+    public BossbarManager getBossbarManager() {
+        return pvpManager.getBossbarManager();
+    }
+
+    public CooldownManager getCooldownManager() {
+        return cooldownManager;
     }
 }

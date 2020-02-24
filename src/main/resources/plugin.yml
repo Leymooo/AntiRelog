@@ -3,7 +3,7 @@ version: ${project.version}
 main: ru.leymooo.antirelog.Antirelog
 api-version: 1.13
 prefix: AntiRelog
-softdepend: [Essentials, SuperVanish, PremiumVanish, VanishNoPacket, WorldGuard, LibsDisguises]
+softdepend: [Essentials, SuperVanish, PremiumVanish, VanishNoPacket, WorldGuard, LibsDisguises, CMI]
 authors: [Leymooo]
 description: AntiRelog
 website: http://rubukkit.org/threads/125331/

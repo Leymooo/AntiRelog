@@ -104,6 +104,12 @@ public class PvPListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onKick(PlayerKickEvent e) {
         Player player = e.getPlayer();
+
+        if (pvpManager.isInSilentPvP(player)) {
+            pvpManager.stopPvPSilent(player);
+            return;
+        }
+
         if (!pvpManager.isInPvP(player)) {
             return;
         }
@@ -151,6 +157,9 @@ public class PvPListener implements Listener {
             }
             runCommands(e.getPlayer());
         }
+        if (pvpManager.isInSilentPvP(e.getPlayer())) {
+            pvpManager.stopPvPSilent(e.getPlayer());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -158,7 +167,10 @@ public class PvPListener implements Listener {
         if (settings.isHideDeathMessage()) {
             e.setDeathMessage(null);
         }
-        pvpManager.stopPvPSilent(e.getEntity());
+
+        if (pvpManager.isInSilentPvP(e.getEntity()) || pvpManager.isInPvP(e.getEntity())) {
+            pvpManager.stopPvPSilent(e.getEntity());
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

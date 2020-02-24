@@ -1,5 +1,7 @@
 package ru.leymooo.antirelog.manager;
 
+import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Containers.CMIUser;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import de.myzelyam.api.vanish.VanishAPI;
@@ -16,7 +18,7 @@ public class PowerUpsManager {
 
     private final Settings settings;
 
-    private boolean vanishAPI, libsDisguises;
+    private boolean vanishAPI, libsDisguises, cmi;
     private VanishPlugin vanishNoPacket;
     private Essentials essentials;
 
@@ -27,6 +29,10 @@ public class PowerUpsManager {
 
 
     public boolean disablePowerUps(Player player) {
+        if (player.hasPermission("antirelog.bypass.checks")) {
+            return false;
+        }
+
         boolean disabled = false;
         if (player.getGameMode() == GameMode.CREATIVE) {
             if (Bukkit.getDefaultGameMode() == GameMode.ADVENTURE) {
@@ -42,16 +48,13 @@ public class PowerUpsManager {
             player.setAllowFlight(false);
             disabled = true;
         }
-        if (essentials != null) {
-            User user = essentials.getUser(player);
-            if (user.isVanished()) {
-                user.setVanished(false);
-                disabled = true;
-            }
-            if (user.isGodModeEnabled()) {
-                user.setGodModeEnabled(false);
-                disabled = true;
-            }
+
+        if (checkEssentials(player)) {
+            disabled = true;
+        }
+
+        if (checkCMI(player)) {
+            disabled = true;
         }
 
         if (vanishAPI && VanishAPI.isInvisible(player)) {
@@ -87,5 +90,41 @@ public class PowerUpsManager {
                 : null;
         this.essentials = pluginManager.isPluginEnabled("Essentials") ? (Essentials) pluginManager.getPlugin("Essentials") : null;
         this.libsDisguises = pluginManager.isPluginEnabled("LibsDisguises");
+        this.cmi = pluginManager.isPluginEnabled("CMI");
+    }
+
+
+    private boolean checkEssentials(Player player) {
+        boolean disabled = false;
+        if (essentials != null) {
+            User user = essentials.getUser(player);
+            if (user.isVanished()) {
+                user.setVanished(false);
+                disabled = true;
+            }
+            if (user.isGodModeEnabled()) {
+                user.setGodModeEnabled(false);
+                disabled = true;
+            }
+        }
+        return disabled;
+    }
+
+    private boolean checkCMI(Player player) {
+        boolean disabled = false;
+        if (cmi) {
+            CMIUser user = CMI.getInstance().getPlayerManager().getUser(player);
+            if (user != null) {
+                if (user.isGod()) {
+                    user.setGod(false);
+                    disabled = true;
+                }
+                if (user.isVanished()) {
+                    user.setVanished(false);
+                    disabled = true;
+                }
+            }
+        }
+        return disabled;
     }
 }

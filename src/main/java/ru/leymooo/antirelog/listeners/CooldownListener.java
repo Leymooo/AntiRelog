@@ -54,7 +54,7 @@ public class CooldownListener implements Listener {
         }
 
         if (cooldownType != null) {
-            if (cooldownTime == 0 || !pvpManager.canStartPvP(event.getPlayer())) {
+            if (cooldownTime == 0 || pvpManager.isBypassed(event.getPlayer())) {
                 return;
             }
             if (cooldownTime <= -1) {
@@ -75,7 +75,7 @@ public class CooldownListener implements Listener {
     public void onPerlLaunch(ProjectileLaunchEvent e) {
         if (settings.getEnderPearlCooldown() > 0 && e.getEntityType() == EntityType.ENDER_PEARL && e.getEntity().getShooter() instanceof Player) {
             Player p = (Player) e.getEntity().getShooter();
-            if (pvpManager.canStartPvP(p)) {
+            if (!pvpManager.isBypassed(p)) {
                 cooldownManager.addCooldown(p, CooldownType.ENDER_PEARL);
             }
         }
@@ -83,7 +83,7 @@ public class CooldownListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onInteract(PlayerInteractEvent event) {
-        if (settings.getEnderPearlCooldown() == 0 || !event.hasItem() || event.getItem().getType() != Material.ENDER_PEARL || !pvpManager.canStartPvP(event.getPlayer())) {
+        if (settings.getEnderPearlCooldown() == 0 || !event.hasItem() || event.getItem().getType() != Material.ENDER_PEARL || pvpManager.isBypassed(event.getPlayer())) {
             return;
         }
 

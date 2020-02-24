@@ -27,10 +27,13 @@ public class WorldGuardListener implements Listener {
         Player attacker = event.getAttacker();
         Player defender = event.getDefender();
 
-        if (pvpManager.isInPvP(attacker) && pvpManager.isInPvP(defender)) {
+        boolean attackerInPvp = pvpManager.isInPvP(attacker) || pvpManager.isInSilentPvP(attacker);
+        boolean defenderInPvp = pvpManager.isInPvP(defender) || pvpManager.isInSilentPvP(defender);
+
+        if (attackerInPvp && defenderInPvp) {
             event.setCancelled(true);
             event.setResult(Result.DENY); //Deny means cancelled means pvp allowed
-        } else if (settings.isJoinPvPInWorldGuard() && pvpManager.isInPvP(defender)) {
+        } else if (settings.isJoinPvPInWorldGuard() && defenderInPvp) {
             event.setCancelled(true);
             event.setResult(Result.DENY); //Deny means cancelled means pvp allowed
         }
