@@ -1,6 +1,7 @@
 package ru.leymooo.antirelog.manager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import ru.leymooo.antirelog.Antirelog;
@@ -105,6 +106,12 @@ public class PvPManager {
 
     public void playerDamagedByPlayer(Player attacker, Player defender) {
         if (defender != attacker && attacker != null && defender != null && (attacker.getWorld() == defender.getWorld())) {
+            if (defender.getGameMode() == GameMode.CREATIVE) { //i dont have time to determite, why some events is called when defender in creative
+                return;
+            }
+            if (defender.isDead() || attacker.isDead()) {
+                return;
+            }
             tryStartPvP(attacker, defender);
         }
     }

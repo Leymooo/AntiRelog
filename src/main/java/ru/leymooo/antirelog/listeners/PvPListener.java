@@ -12,6 +12,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.leymooo.antirelog.config.Messages;
@@ -20,16 +21,26 @@ import ru.leymooo.antirelog.manager.PvPManager;
 import ru.leymooo.antirelog.util.Utils;
 import ru.leymooo.antirelog.util.VersionUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class PvPListener implements Listener {
 
     private final PvPManager pvpManager;
     private final Messages messages;
     private final Settings settings;
+    private final Map<Player, AtomicInteger> allowedTeleports = new HashMap<>();
 
-    public PvPListener(PvPManager pvpManager, Settings settings) {
+
+    public PvPListener(Plugin plugin, PvPManager pvpManager, Settings settings) {
         this.pvpManager = pvpManager;
         this.settings = settings;
         this.messages = settings.getMessages();
+        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            allowedTeleports.values().forEach(ai -> ai.set(ai.get() + 1));
+            allowedTeleports.values().removeIf(ai -> ai.get() >= 5);
+        }, 1l, 1l);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -72,14 +83,19 @@ public class PvPListener implements Listener {
     public void onTeleport(PlayerTeleportEvent ev) {
 
         if (settings.isDisableTeleportsInPvp() && pvpManager.isInPvP(ev.getPlayer())) {
+            if (allowedTeleports.containsKey(ev.getPlayer())) { //allow all teleport in 4-5 ticks after chorus or ender pearl
+                return;
+            }
+
             if ((VersionUtils.isVersion(9) && ev.getCause() == TeleportCause.CHORUS_FRUIT) || ev.getCause() == TeleportCause.ENDER_PEARL) {
+                allowedTeleports.put(ev.getPlayer(), new AtomicInteger(0));
                 return;
             }
             if (ev.getFrom().getWorld() != ev.getTo().getWorld()) {
                 ev.setCancelled(true);
                 return;
             }
-            if (ev.getFrom().distanceSquared(ev.getTo()) > 50) { //50 ~ 7 blocks
+            if (ev.getFrom().distanceSquared(ev.getTo()) > 100) { //10 = 10 blocks
                 ev.setCancelled(true);
             }
         }
@@ -144,6 +160,7 @@ public class PvPListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
+        allowedTeleports.remove(e.getPlayer());
         if (settings.isHideLeaveMessage()) {
             e.setQuitMessage(null);
         }
