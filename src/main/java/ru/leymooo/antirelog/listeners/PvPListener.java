@@ -6,12 +6,11 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,10 +22,14 @@ import ru.leymooo.antirelog.util.VersionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PvPListener implements Listener {
 
+    private final static String META_KEY = "ar-f-shooter";
+
+    private final Plugin plugin;
     private final PvPManager pvpManager;
     private final Messages messages;
     private final Settings settings;
@@ -34,6 +37,7 @@ public class PvPListener implements Listener {
 
 
     public PvPListener(Plugin plugin, PvPManager pvpManager, Settings settings) {
+        this.plugin = plugin;
         this.pvpManager = pvpManager;
         this.settings = settings;
         this.messages = settings.getMessages();
@@ -60,6 +64,13 @@ public class PvPListener implements Listener {
         Player target = (Player) event.getEntity();
         Player damager = getDamager(event.getCombuster());
         pvpManager.playerDamagedByPlayer(damager, target);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onShootBow(EntityShootBowEvent event) {
+        if (VersionUtils.isVersion(14) && event.getProjectile() instanceof Firework && event.getEntity().getType() == EntityType.PLAYER) {
+            event.getProjectile().setMetadata(META_KEY, new FixedMetadataValue(plugin, event.getEntity().getUniqueId()));
+        }
     }
 
 
@@ -228,6 +239,20 @@ public class PvPListener implements Listener {
             AreaEffectCloud aec = (AreaEffectCloud) damager;
             if (aec.getSource() instanceof Player) {
                 return (Player) aec.getSource();
+            }
+        } else if (VersionUtils.isVersion(14) && damager instanceof Firework) {
+            if (damager.hasMetadata(META_KEY)) {
+                MetadataValue metadata = null;
+                for (MetadataValue metadataValue : damager.getMetadata(META_KEY)) {
+                    if (metadataValue.getOwningPlugin() == plugin) {
+                        metadata = metadataValue;
+                        break;
+                    }
+                }
+                if (metadata != null) {
+                    damager.removeMetadata(META_KEY, plugin);
+                    return Bukkit.getPlayer((UUID) metadata.value());
+                }
             }
         }
         return null;

@@ -6,7 +6,7 @@
 
     <groupId>ru.leymooo</groupId>
     <artifactId>antirelog</artifactId>
-    <version>3.0.5-2</version>
+    <version>3.0.5-3-dev</version>
     <packaging>jar</packaging>
 
     <name>AntiRelog</name>
