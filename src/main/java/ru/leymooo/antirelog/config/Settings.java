@@ -14,7 +14,7 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.3";
+    private String configVersion = "1.4";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
@@ -31,6 +31,10 @@ public class Settings extends Configuration {
             "отключает использование во время пвп"})
     @ConfigKey("chorus-cooldown")
     private int сhorusCooldown = 7;
+    @Comment({"Кулдавн для тотемов бесмертия во время пвп.", "Значение 0 отключает кулдаун; -1 " +
+            "отключает использование во время пвп"})
+    @ConfigKey("totem-cooldown")
+    private int totemCooldown = 60;
     @Comment("Длительность пвп")
     @ConfigKey("pvp-time")
     private int pvpTime = 12;
@@ -118,6 +122,10 @@ public class Settings extends Configuration {
         return сhorusCooldown;
     }
 
+    public int getTotemCooldown() {
+        return totemCooldown;
+    }
+
     public int getPvpTime() {
         return pvpTime;
     }
@@ -186,7 +194,6 @@ public class Settings extends Configuration {
         return disabledWorlds;
     }
 
-
     @Override
     public String toString() {
         return "Settings{" +
@@ -196,6 +203,7 @@ public class Settings extends Configuration {
                 ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
                 ", enderPearlCooldown=" + enderPearlCooldown +
                 ", сhorusCooldown=" + сhorusCooldown +
+                ", totemCooldown=" + totemCooldown +
                 ", pvpTime=" + pvpTime +
                 ", disableCommandsInPvp=" + disableCommandsInPvp +
                 ", whiteListedCommands=" + whiteListedCommands +

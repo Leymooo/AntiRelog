@@ -32,6 +32,10 @@ public class Messages extends Configuration {
     private String itemCooldown = "&b&lВы сможете использовать этот предмет через &a&l%time% &b&l%formated-sec%.";
     @ConfigKey("item-disabled-in-pvp")
     private String itemDisabledInPvp = "&b&lВы не можете использовать этот предмет в &e&lPVP &b&lрежиме";
+    @ConfigKey("totem-cooldown")
+    private String totemCooldown = "&b&lТотем небыл использован, т.к был недавно использован. Тотем будет доступен через &a&l%time% &b&l%formated-sec%.";
+    @ConfigKey("totem-disabled-in-pvp")
+    private String totemDisabledInPvp = "&b&lТотем небыл использован, т.к он отключен в &e&lPVP &b&lрежиме";
     @ConfigKey("pvp-started-with-powerups")
     @Comment("Данное сообщение будет появляться только тогда, когда настроена функция 'commands-on-powerups-disable'")
     private String pvpStartedWithPowerups = "&c&lВы начали пвп с включеным GM/FLY/и тд и за это получили негативный эффект";
@@ -88,6 +92,14 @@ public class Messages extends Configuration {
         return itemDisabledInPvp;
     }
 
+    public String getTotemCooldown() {
+        return totemCooldown;
+    }
+
+    public String getTotemDisabledInPvp() {
+        return totemDisabledInPvp;
+    }
+
     public String getPvpStartedWithPowerups() {
         return pvpStartedWithPowerups;
     }
@@ -108,6 +120,8 @@ public class Messages extends Configuration {
                 ", commandsDisabled='" + commandsDisabled + '\'' +
                 ", itemCooldown='" + itemCooldown + '\'' +
                 ", itemDisabledInPvp='" + itemDisabledInPvp + '\'' +
+                ", totemCooldown='" + totemCooldown + '\'' +
+                ", totemDisabledInPvp='" + totemDisabledInPvp + '\'' +
                 ", pvpStartedWithPowerups='" + pvpStartedWithPowerups + '\'' +
                 '}';
     }

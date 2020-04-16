@@ -40,7 +40,7 @@ public class Antirelog extends JavaPlugin {
         cooldownManager = new CooldownManager();
         detectPlugins();
         getServer().getPluginManager().registerEvents(new PvPListener(this, pvpManager, settings), this);
-        getServer().getPluginManager().registerEvents(new CooldownListener(cooldownManager, pvpManager, settings), this);
+        getServer().getPluginManager().registerEvents(new CooldownListener(this, cooldownManager, pvpManager, settings), this);
     }
 
     @Override

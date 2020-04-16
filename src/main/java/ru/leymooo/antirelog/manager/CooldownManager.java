@@ -37,6 +37,7 @@ public class CooldownManager {
         GOLDEN_APPLE,
         ENC_GOLDEN_APPLE,
         ENDER_PEARL,
-        CHORUS;
+        CHORUS,
+        TOTEM;
     }
 }
