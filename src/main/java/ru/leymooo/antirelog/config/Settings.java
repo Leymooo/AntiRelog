@@ -14,7 +14,7 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.4";
+    private String configVersion = "1.5";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
@@ -31,6 +31,9 @@ public class Settings extends Configuration {
             "отключает использование во время пвп"})
     @ConfigKey("chorus-cooldown")
     private int сhorusCooldown = 7;
+    @Comment({"Кулдавн для фейверков во время пвп. (чтобы не убегали на элитрах)", "Значение 0 отключает кулдаун; -1 отключает использование во время пвп"})
+    @ConfigKey("firework-cooldown")
+    private int fireworkCooldown = 60;
     @Comment({"Кулдавн для тотемов бесмертия во время пвп.", "Значение 0 отключает кулдаун; -1 " +
             "отключает использование во время пвп"})
     @ConfigKey("totem-cooldown")
@@ -122,6 +125,10 @@ public class Settings extends Configuration {
         return сhorusCooldown;
     }
 
+    public int getFireworkCooldown() {
+        return fireworkCooldown;
+    }
+
     public int getTotemCooldown() {
         return totemCooldown;
     }
@@ -197,30 +204,31 @@ public class Settings extends Configuration {
     @Override
     public String toString() {
         return "Settings{" +
-                "configVersion='" + configVersion + '\'' +
-                ", messages=" + messages +
-                ", goldenAppleCooldown=" + goldenAppleCooldown +
-                ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
-                ", enderPearlCooldown=" + enderPearlCooldown +
-                ", сhorusCooldown=" + сhorusCooldown +
-                ", totemCooldown=" + totemCooldown +
-                ", pvpTime=" + pvpTime +
-                ", disableCommandsInPvp=" + disableCommandsInPvp +
-                ", whiteListedCommands=" + whiteListedCommands +
-                ", killOnLeave=" + killOnLeave +
-                ", killOnKick=" + killOnKick +
-                ", runCommandsOnKick=" + runCommandsOnKick +
-                ", kickMessages=" + kickMessages +
-                ", commandsOnLeave=" + commandsOnLeave +
-                ", disablePowerups=" + disablePowerups +
-                ", commandsOnPowerupsDisable=" + commandsOnPowerupsDisable +
-                ", disableTeleportsInPvp=" + disableTeleportsInPvp +
-                ", ignoreWorldGuard=" + ignoreWorldGuard +
-                ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +
-                ", hideJoinMessage=" + hideJoinMessage +
-                ", hideLeaveMessage=" + hideLeaveMessage +
-                ", hideDeathMessage=" + hideDeathMessage +
-                ", disabledWorlds=" + disabledWorlds +
-                '}';
+            "configVersion='" + configVersion + '\'' +
+            ", messages=" + messages +
+            ", goldenAppleCooldown=" + goldenAppleCooldown +
+            ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
+            ", enderPearlCooldown=" + enderPearlCooldown +
+            ", сhorusCooldown=" + сhorusCooldown +
+            ", fireworkCooldown=" + fireworkCooldown +
+            ", totemCooldown=" + totemCooldown +
+            ", pvpTime=" + pvpTime +
+            ", disableCommandsInPvp=" + disableCommandsInPvp +
+            ", whiteListedCommands=" + whiteListedCommands +
+            ", killOnLeave=" + killOnLeave +
+            ", killOnKick=" + killOnKick +
+            ", runCommandsOnKick=" + runCommandsOnKick +
+            ", kickMessages=" + kickMessages +
+            ", commandsOnLeave=" + commandsOnLeave +
+            ", disablePowerups=" + disablePowerups +
+            ", commandsOnPowerupsDisable=" + commandsOnPowerupsDisable +
+            ", disableTeleportsInPvp=" + disableTeleportsInPvp +
+            ", ignoreWorldGuard=" + ignoreWorldGuard +
+            ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +
+            ", hideJoinMessage=" + hideJoinMessage +
+            ", hideLeaveMessage=" + hideLeaveMessage +
+            ", hideDeathMessage=" + hideDeathMessage +
+            ", disabledWorlds=" + disabledWorlds +
+            '}';
     }
 }

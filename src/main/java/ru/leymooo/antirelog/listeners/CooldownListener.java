@@ -77,7 +77,7 @@ public class CooldownListener implements Listener {
             cooldownTime = settings.getСhorusCooldown();
         }
         if (isGoldenOrEnchantedApple(consumeItem)) {
-            boolean enchanted = isEnchantedGolderApple(consumeItem);
+            boolean enchanted = isEnchantedGoldenApple(consumeItem);
             cooldownType = enchanted ? CooldownType.ENC_GOLDEN_APPLE : CooldownType.GOLDEN_APPLE;
             cooldownTime = enchanted ? settings.getEnchantedGoldenAppleCooldown() : settings.getGoldenAppleCooldown();
         }
@@ -110,20 +110,34 @@ public class CooldownListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (settings.getEnderPearlCooldown() == 0 || !event.hasItem() || event.getItem().getType() != Material.ENDER_PEARL || pvpManager.isBypassed(event.getPlayer())) {
-            return;
+        if (settings.getEnderPearlCooldown() == 0 && settings.getFireworkCooldown() == 0) return;
+        if (!event.hasItem()) return;
+        if (pvpManager.isBypassed(event.getPlayer())) return;
+
+        if (settings.getEnderPearlCooldown() != 0 && event.getItem().getType() == Material.ENDER_PEARL) {
+            if (settings.getEnderPearlCooldown() <= -1) {
+                cancelEventIfInPvp(event, CooldownType.ENDER_PEARL, event.getPlayer());
+                return;
+            }
+            if (checkCooldown(event.getPlayer(), CooldownType.ENDER_PEARL,
+                    settings.getEnderPearlCooldown() * 1000)) {
+                event.setCancelled(true);
+            }
+        } else if (settings.getFireworkCooldown() != 0 && isFirework(event.getItem())) {
+            if (settings.getFireworkCooldown() <= -1) {
+                cancelEventIfInPvp(event, CooldownType.FIREWORK, event.getPlayer());
+                return;
+            }
+
+            if (checkCooldown(event.getPlayer(), CooldownType.FIREWORK, settings.getFireworkCooldown() * 1000)) {
+                event.setCancelled(true);
+                return;
+            }
+            cooldownManager.addCooldown(event.getPlayer(), CooldownType.FIREWORK);
         }
 
-        if (settings.getEnderPearlCooldown() <= -1) {
-            cancelEventIfInPvp(event, CooldownType.ENDER_PEARL, event.getPlayer());
-            return;
-        }
-
-        if (checkCooldown(event.getPlayer(), CooldownType.ENDER_PEARL, settings.getEnderPearlCooldown() * 1000)) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler
@@ -136,16 +150,20 @@ public class CooldownListener implements Listener {
     }
 
     private boolean isGoldenOrEnchantedApple(ItemStack itemStack) {
-        return isGoldenApple(itemStack) || isEnchantedGolderApple(itemStack);
+        return isGoldenApple(itemStack) || isEnchantedGoldenApple(itemStack);
     }
 
     private boolean isGoldenApple(ItemStack itemStack) {
         return itemStack.getType() == Material.GOLDEN_APPLE;
     }
 
-    private boolean isEnchantedGolderApple(ItemStack itemStack) {
+    private boolean isEnchantedGoldenApple(ItemStack itemStack) {
         return (VersionUtils.isVersion(13) && itemStack.getType() == Material.ENCHANTED_GOLDEN_APPLE)
                 || (isGoldenApple(itemStack) && itemStack.getDurability() >= 1);
+    }
+
+    private boolean isFirework(ItemStack itemStack) {
+        return VersionUtils.isVersion(13) ? itemStack.getType() == Material.FIREWORK_ROCKET : itemStack.getType() == Material.getMaterial("FIREWORK");
     }
 
     private void cancelEventIfInPvp(Cancellable event, CooldownType type, Player player) {
