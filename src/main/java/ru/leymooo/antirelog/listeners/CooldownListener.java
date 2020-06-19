@@ -110,7 +110,7 @@ public class CooldownListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onInteract(PlayerInteractEvent event) {
         if (settings.getEnderPearlCooldown() == 0 && settings.getFireworkCooldown() == 0) return;
         if (!event.hasItem()) return;
