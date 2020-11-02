@@ -127,7 +127,7 @@ public class CooldownManager {
         ENC_GOLDEN_APPLE(VersionUtils.isVersion(13) ? Material.ENCHANTED_GOLDEN_APPLE : Material.GOLDEN_APPLE, Settings::getEnchantedGoldenAppleCooldown),
         ENDER_PEARL(Material.ENDER_PEARL, Settings::getEnderPearlCooldown),
         CHORUS(Material.matchMaterial("CHORUS_FRUIT"), Settings::getСhorusCooldown),
-        TOTEM(Material.matchMaterial("TOTEM_OF_UNDYING"), Settings::getTotemCooldown),
+        TOTEM(VersionUtils.isVersion(13) ? Material.TOTEM_OF_UNDYING : Material.matchMaterial("TOTEM"), Settings::getTotemCooldown),
         FIREWORK(VersionUtils.isVersion(13) ? Material.FIREWORK_ROCKET : Material.matchMaterial("FIREWORK"), Settings::getFireworkCooldown);
 
         public static CooldownType[] values = values();
