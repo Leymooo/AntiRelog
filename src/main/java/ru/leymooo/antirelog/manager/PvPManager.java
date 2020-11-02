@@ -203,6 +203,7 @@ public class PvPManager {
             if (settings.isDisablePowerups()) {
                 powerUpsManager.disablePowerUps(player);
             }
+            player.setNoDamageTicks(0);
         }
     }
 

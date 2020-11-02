@@ -57,6 +57,13 @@ public class PvPListener implements Listener {
         pvpManager.playerDamagedByPlayer(damager, target);
     }
 
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInteractWithEntity(PlayerInteractEntityEvent event) {
+        if (settings.isCancelInteractWithEntities() && pvpManager.isPvPModeEnabled() && pvpManager.isInPvP(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCombust(EntityCombustByEntityEvent event) {
         if (!(event.getEntity() instanceof Player))
@@ -90,7 +97,7 @@ public class PvPListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent ev) {
 
         if (settings.isDisableTeleportsInPvp() && pvpManager.isInPvP(ev.getPlayer())) {

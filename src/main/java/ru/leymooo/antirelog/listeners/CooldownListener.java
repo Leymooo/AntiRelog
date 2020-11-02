@@ -15,6 +15,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import ru.leymooo.antirelog.config.Settings;
+import ru.leymooo.antirelog.event.PvpStartedEvent;
+import ru.leymooo.antirelog.event.PvpStoppedEvent;
 import ru.leymooo.antirelog.manager.CooldownManager;
 import ru.leymooo.antirelog.manager.CooldownManager.CooldownType;
 import ru.leymooo.antirelog.manager.PvPManager;
@@ -59,6 +61,7 @@ public class CooldownListener implements Listener {
                         return;
                     }
                     cooldownManager.addCooldown(player, CooldownType.TOTEM);
+                    addItemCooldownIfNeeded(player, CooldownType.TOTEM);
                 }
             }, plugin);
         }
@@ -96,6 +99,7 @@ public class CooldownListener implements Listener {
                 return;
             }
             cooldownManager.addCooldown(event.getPlayer(), cooldownType);
+            addItemCooldownIfNeeded(event.getPlayer(), cooldownType);
         }
 
     }
@@ -106,6 +110,7 @@ public class CooldownListener implements Listener {
             Player p = (Player) e.getEntity().getShooter();
             if (!pvpManager.isBypassed(p)) {
                 cooldownManager.addCooldown(p, CooldownType.ENDER_PEARL);
+                addItemCooldownIfNeeded(p, CooldownType.ENDER_PEARL);
             }
         }
     }
@@ -136,6 +141,7 @@ public class CooldownListener implements Listener {
                 return;
             }
             cooldownManager.addCooldown(event.getPlayer(), CooldownType.FIREWORK);
+            addItemCooldownIfNeeded(event.getPlayer(), CooldownType.FIREWORK);
         }
 
     }
@@ -143,6 +149,27 @@ public class CooldownListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         cooldownManager.remove(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPvpStart(PvpStartedEvent event) {
+        switch (event.getPvpStatus()) {
+            case ALL_NOT_IN_PVP:
+                cooldownManager.enteredToPvp(event.getDefender());
+                cooldownManager.enteredToPvp(event.getAttacker());
+                break;
+            case ATTACKER_IN_PVP:
+                cooldownManager.enteredToPvp(event.getDefender());
+                break;
+            case DEFENDER_IN_PVP:
+                cooldownManager.enteredToPvp(event.getAttacker());
+                break;
+        }
+    }
+
+    @EventHandler
+    public void onPvpStop(PvpStoppedEvent event) {
+        cooldownManager.removedFromPvp(event.getPlayer());
     }
 
     private boolean isChorus(ItemStack itemStack) {
@@ -192,6 +219,16 @@ public class CooldownListener implements Listener {
             return true;
         }
         return false;
+    }
+
+    private void addItemCooldownIfNeeded(Player player, CooldownType cooldownType) {
+        if (pvpManager.isPvPModeEnabled()) {
+            if (pvpManager.isInPvP(player)) {
+                cooldownManager.addItemCooldown(player, cooldownType, cooldownType.getCooldown(settings) * 1000);
+            }
+        } else {
+            cooldownManager.addItemCooldown(player, cooldownType, cooldownType.getCooldown(settings) * 1000);
+        }
     }
 
 }

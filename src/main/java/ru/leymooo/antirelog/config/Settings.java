@@ -14,7 +14,7 @@ public class Settings extends Configuration {
 
     @Final
     @ConfigKey("config-version")
-    private String configVersion = "1.5";
+    private String configVersion = "1.6";
     private Messages messages = new Messages();
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
     @ConfigKey("golden-apple-cooldown")
@@ -49,6 +49,9 @@ public class Settings extends Configuration {
             "commands-whitelist:", "- command", "- command2", "- /expand"})
     @ConfigKey("commands-whitelist")
     private List<String> whiteListedCommands = new ArrayList<>(0);
+    @ConfigKey("cancel-interact-with-entities")
+    @Comment("Отменять ли взаимодействие с энтити, во время пвп")
+    private boolean cancelInteractWithEntities = false;
     @Comment("Убивать ли игрока если он вышел во время пвп?")
     @ConfigKey("kill-on-leave")
     private boolean killOnLeave = true;
@@ -139,6 +142,10 @@ public class Settings extends Configuration {
 
     public boolean isDisableCommandsInPvp() {
         return disableCommandsInPvp;
+    }
+
+    public boolean isCancelInteractWithEntities() {
+        return cancelInteractWithEntities;
     }
 
     public List<String> getCommandsOnPowerupsDisable() {
