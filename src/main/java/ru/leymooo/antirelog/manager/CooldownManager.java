@@ -6,6 +6,7 @@ import com.google.common.collect.Table;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import ru.leymooo.antirelog.Antirelog;
 import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.util.ProtocolLibUtils;
 import ru.leymooo.antirelog.util.VersionUtils;
@@ -18,16 +19,16 @@ import java.util.function.Function;
 
 public class CooldownManager {
 
-    private final Plugin plugin;
+    private final Antirelog plugin;
     private final Settings settings;
     private final ScheduledExecutorService scheduledExecutorService;
     private final Table<Player, CooldownType, Long> cooldowns = HashBasedTable.create();
     private final Table<Player, CooldownType, ScheduledFuture> futures = HashBasedTable.create();
 
-    public CooldownManager(Plugin plugin, Settings settings) {
+    public CooldownManager(Antirelog plugin, Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
-        if (ProtocolLibUtils.isEnabled()) {
+        if (plugin.isProtocolLibEnabled()) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         } else {
             scheduledExecutorService = null;
@@ -39,7 +40,7 @@ public class CooldownManager {
     }
 
     public void addItemCooldown(Player player, CooldownType type, long duration) {
-        if (!ProtocolLibUtils.isEnabled()) {
+        if (!plugin.isProtocolLibEnabled()) {
             return;
         }
         int durationInTicks = (int) Math.ceil(duration / 50.0);

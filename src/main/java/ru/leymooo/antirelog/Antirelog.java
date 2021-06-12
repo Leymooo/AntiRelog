@@ -29,21 +29,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Stream;
+import ru.leymooo.antirelog.util.VersionUtils;
 
 public class Antirelog extends JavaPlugin {
     private Settings settings;
     private PvPManager pvpManager;
     private CooldownManager cooldownManager;
+    private boolean protocolLib;
 
     @Override
     public void onEnable() {
         loadConfig();
         pvpManager = new PvPManager(settings, this);
+        detectPlugins();
         cooldownManager = new CooldownManager(this, settings);
-        if (ProtocolLibUtils.isEnabled()) {
+        if (protocolLib) {
             ProtocolLibUtils.createListener(cooldownManager, pvpManager, this);
         }
-        detectPlugins();
         getServer().getPluginManager().registerEvents(new PvPListener(this, pvpManager, settings), this);
         getServer().getPluginManager().registerEvents(new CooldownListener(this, cooldownManager, pvpManager, settings), this);
     }
@@ -158,6 +160,9 @@ public class Antirelog extends JavaPlugin {
         cooldownManager.clearAll();
     }
 
+    public boolean isProtocolLibEnabled() {
+        return protocolLib;
+    }
 
     private void detectPlugins() {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
@@ -169,6 +174,7 @@ public class Antirelog extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(new EssentialsTeleportListener(pvpManager, settings), this);
         } catch (ClassNotFoundException e) {
         }
+        protocolLib = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib") && VersionUtils.isVersion(9);
     }
 
     public Settings getSettings() {

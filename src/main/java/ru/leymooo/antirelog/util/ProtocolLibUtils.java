@@ -92,8 +92,4 @@ public class ProtocolLibUtils {
             }
         });
     }
-
-    public static boolean isEnabled() {
-        return hasProtocolLib;
-    }
 }
