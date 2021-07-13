@@ -32,7 +32,8 @@ public class ProtocolLibUtils {
     static {
         hasProtocolLib = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib") && VersionUtils.isVersion(9);
         if (hasProtocolLib) {
-            ITEM_CLASS = MinecraftReflection.getMinecraftClass("Item");
+            boolean is117 = VersionUtils.isVersion(17);
+            ITEM_CLASS = MinecraftReflection.getMinecraftClass(is117 ? "world.item.Item" :"Item");
             getItem = Accessors.getMethodAccessor(MinecraftReflection
                             .getCraftBukkitClass("util.CraftMagicNumbers"),
                     "getItem", Material.class);

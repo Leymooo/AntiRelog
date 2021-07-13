@@ -49,6 +49,7 @@ public class VersionUtils {
                 minorVersion = Integer.parseInt(matchResult.group(3), 10);
                 minorVersionResolved = true;
             }
+            JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
         } catch (Exception e) {
             JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Trying another method"
                     , e);
@@ -59,17 +60,20 @@ public class VersionUtils {
                     minorVersion = Integer.parseInt(split[2]);
                     minorVersionResolved = true;
                 }
+                JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
             } catch (Exception e2) {
                 JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Trying another " +
                         "method", e2);
                 try {
                     String[] split = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].split("_");
                     majorVersion = Integer.parseInt(split[1]);
+                    JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
                 } catch (Exception e3) {
                     JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Fallback to 1" +
                             ".8.8.", e3);
                     majorVersion = 8;
                     minorVersion = 8;
+                    JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
                 }
             }
         }
