@@ -188,6 +188,7 @@ public class PvPManager {
             sendTitles(player, true);
         }
         updatePvpMode(player, bypassed, settings.getPvpTime());
+        player.setNoDamageTicks(0);
     }
 
     private void updatePvpMode(Player player, boolean bypassed, int newTime) {
@@ -203,7 +204,7 @@ public class PvPManager {
             if (settings.isDisablePowerups()) {
                 powerUpsManager.disablePowerUps(player);
             }
-            player.setNoDamageTicks(0);
+            //player.setNoDamageTicks(0);
         }
     }
 
