@@ -58,6 +58,9 @@ public class CooldownManager {
     }
 
     public void removeItemCooldown(Player player, CooldownType type) {
+        if (!plugin.isProtocolLibEnabled()) {
+            return;
+        }
         ScheduledFuture future = futures.get(player, type);
         if (future != null && !future.isCancelled()) {
             future.cancel(false);
