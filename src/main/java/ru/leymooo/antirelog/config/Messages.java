@@ -1,42 +1,41 @@
 package ru.leymooo.antirelog.config;
 
-import ru.leymooo.annotatedyaml.ConfigOptions.Comment;
-import ru.leymooo.annotatedyaml.ConfigOptions.ConfigKey;
-import ru.leymooo.annotatedyaml.Configuration;
+import ru.leymooo.annotatedyaml.Annotations.*;
+import ru.leymooo.annotatedyaml.ConfigurationSection;
 
 @Comment("Для того, чтобы отключить сообщение, оставьте его пустым")
-public class Messages extends Configuration {
-    @ConfigKey("pvp-started")
+public class Messages implements ConfigurationSection {
+    @Key("pvp-started")
     private String pvpStarted = "&bВы начали &e&lPVP&b!";
-    @ConfigKey("pvp-started-title")
+    @Key("pvp-started-title")
     private String pvpStartedTitle = "&bAntiRelog";
-    @ConfigKey("pvp-started-subtitle")
+    @Key("pvp-started-subtitle")
     private String pvpStartedSubtitle = "Вы вошли в режим &ePVP&a!";
-    @ConfigKey("pvp-stopped")
+    @Key("pvp-stopped")
     private String pvpStopped = "&e&lPVP &bокончено";
-    @ConfigKey("pvp-stopped-title")
+    @Key("pvp-stopped-title")
     private String pvpStoppedTitle = "&bAntiRelog";
-    @ConfigKey("pvp-stopped-subtitle")
+    @Key("pvp-stopped-subtitle")
     private String pvpStoppedSubtitle = "Вы вышли из режима &ePVP&a!";
-    @ConfigKey("pvp-stopped-actionbar")
+    @Key("pvp-stopped-actionbar")
     private String pvpStoppedActionbar = "&e&lPVP &aокончено, Вы снова можете использовать команды и выходить из игры!";
-    @ConfigKey("in-pvp-bossbar")
+    @Key("in-pvp-bossbar")
     private String inPvpBossbar = "&r&lРежим &c&lPVP &r&l- &a&l%time% &r&l%formated-sec%.";
-    @ConfigKey("in-pvp-actionbar")
+    @Key("in-pvp-actionbar")
     private String inPvpActionbar = "&r&lРежим &c&lPVP&r&l, не выходите из игры &a&l%time% &r&l%formated-sec%.";
-    @ConfigKey("pvp-leaved")
+    @Key("pvp-leaved")
     private String pvpLeaved = "&aИгрок &c&l%player% &aпокинул игру во время &b&lПВП&a и был наказан.";
-    @ConfigKey("commands-disabled")
+    @Key("commands-disabled")
     private String commandsDisabled = "&b&lВы не можете использовать команды в &e&lPvP&b&l. &b&lПодождите &a&l%time% &b&l%formated-sec%.";
-    @ConfigKey("item-cooldown")
+    @Key("item-cooldown")
     private String itemCooldown = "&b&lВы сможете использовать этот предмет через &a&l%time% &b&l%formated-sec%.";
-    @ConfigKey("item-disabled-in-pvp")
+    @Key("item-disabled-in-pvp")
     private String itemDisabledInPvp = "&b&lВы не можете использовать этот предмет в &e&lPVP &b&lрежиме";
-    @ConfigKey("totem-cooldown")
+    @Key("totem-cooldown")
     private String totemCooldown = "&b&lТотем небыл использован, т.к был недавно использован. Тотем будет доступен через &a&l%time% &b&l%formated-sec%.";
-    @ConfigKey("totem-disabled-in-pvp")
+    @Key("totem-disabled-in-pvp")
     private String totemDisabledInPvp = "&b&lТотем небыл использован, т.к он отключен в &e&lPVP &b&lрежиме";
-    @ConfigKey("pvp-started-with-powerups")
+    @Key("pvp-started-with-powerups")
     @Comment("Данное сообщение будет появляться только тогда, когда настроена функция 'commands-on-powerups-disable'")
     private String pvpStartedWithPowerups = "&c&lВы начали пвп с включеным GM/FLY/и тд и за это получили негативный эффект";
 

@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import ru.leymooo.annotatedyaml.Configuration;
 import ru.leymooo.annotatedyaml.ConfigurationProvider;
 import ru.leymooo.annotatedyaml.provider.BukkitConfigurationProvider;
 import ru.leymooo.antirelog.config.Settings;
@@ -36,6 +37,7 @@ public class Antirelog extends JavaPlugin {
     private PvPManager pvpManager;
     private CooldownManager cooldownManager;
     private boolean protocolLib;
+    private boolean worldguard;
 
     @Override
     public void onEnable() {
@@ -62,8 +64,11 @@ public class Antirelog extends JavaPlugin {
 
     private void loadConfig() {
         fixFolder();
-        settings = new Settings(new BukkitConfigurationProvider(new File(getDataFolder(), "config.yml")));
+        settings = Configuration.builder(Settings.class)
+                .file(new File(getDataFolder(), "config.yml"))
+                .provider(BukkitConfigurationProvider.class).build();
         ConfigurationProvider provider = settings.getConfigurationProvider();
+        provider.reloadFileFromDisk();
         File file = provider.getConfigFile();
         //rename old config
         if (file.exists() && provider.get("config-version") == null) {
@@ -79,9 +84,13 @@ public class Antirelog extends JavaPlugin {
             //create new file
             settings.save();
         } else if (provider.isFileSuccessfullyLoaded()) {
-            settings.load();
-            if (!((String) provider.get("config-version")).equals(settings.getConfigVersion())) {
-                settings.save();
+            if (settings.load()) {
+                if (!((String) provider.get("config-version")).equals(settings.getConfigVersion())) {
+                    getLogger().info("Конфиг был обновлен.");
+                    settings.save();
+                }
+            } else {
+                getLogger().warning("Не удалось загрузить конфиг");
             }
         } else {
             getLogger().warning("Can't load settings from file, using default...");
@@ -164,10 +173,15 @@ public class Antirelog extends JavaPlugin {
         return protocolLib;
     }
 
+    public boolean isWorldguardEnabled() {
+        return worldguard;
+    }
+
     private void detectPlugins() {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             WorldGuardWrapper.getInstance().registerEvents(this);
             Bukkit.getPluginManager().registerEvents(new WorldGuardListener(settings, pvpManager), this);
+            worldguard = true;
         }
         try {
             Class.forName("net.ess3.api.events.teleport.PreTeleportEvent");

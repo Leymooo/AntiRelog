@@ -1,107 +1,144 @@
 package ru.leymooo.antirelog.config;
 
-import ru.leymooo.annotatedyaml.ConfigOptions.Comment;
-import ru.leymooo.annotatedyaml.ConfigOptions.ConfigKey;
-import ru.leymooo.annotatedyaml.ConfigOptions.Final;
+
+import ru.leymooo.annotatedyaml.Annotations.*;
+
 import ru.leymooo.annotatedyaml.Configuration;
 import ru.leymooo.annotatedyaml.ConfigurationProvider;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Settings extends Configuration {
 
     @Final
-    @ConfigKey("config-version")
-    private String configVersion = "1.6";
+    @Key("config-version")
+    private String configVersion = "1.7";
     private Messages messages = new Messages();
+
     @Comment("Кулдавн для обычных золотых яблок во время пвп.")
-    @ConfigKey("golden-apple-cooldown")
+    @Key("golden-apple-cooldown")
     private int goldenAppleCooldown = 30;
+
     @Comment({"Кулдавн для зачарованых золотых яблок во время пвп.", "Значение 0 отключает кулдаун; -1 отключает использование во время " +
             "пвп"})
-    @ConfigKey("enchanted-golden-apple-cooldown")
+    @Key("enchanted-golden-apple-cooldown")
     private int enchantedGoldenAppleCooldown = 60;
+
     @Comment({"Кулдавн для жемчугов края во время пвп.", "Значение 0 отключает кулдаун; -1 отключает использование во время " +
             "пвп"})
-    @ConfigKey("ender-pearl-cooldown")
+    @Key("ender-pearl-cooldown")
     private int enderPearlCooldown = 15;
+
     @Comment({"Кулдавн для корусов во время пвп.", "https://minecraft-ru.gamepedia.com/Плод_коруса", "Значение 0 отключает кулдаун; -1 " +
             "отключает использование во время пвп"})
-    @ConfigKey("chorus-cooldown")
+    @Key("chorus-cooldown")
     private int сhorusCooldown = 7;
+
     @Comment({"Кулдавн для фейверков во время пвп. (чтобы не убегали на элитрах)", "Значение 0 отключает кулдаун; -1 отключает использование во время пвп"})
-    @ConfigKey("firework-cooldown")
+    @Key("firework-cooldown")
     private int fireworkCooldown = 60;
+
     @Comment({"Кулдавн для тотемов бесмертия во время пвп.", "Значение 0 отключает кулдаун; -1 " +
             "отключает использование во время пвп"})
-    @ConfigKey("totem-cooldown")
+    @Key("totem-cooldown")
     private int totemCooldown = 60;
+
     @Comment("Длительность пвп")
-    @ConfigKey("pvp-time")
+    @Key("pvp-time")
     private int pvpTime = 12;
+
     @Comment("Отключить ли возможность писать команды в пвп?")
-    @ConfigKey("disable-commands-in-pvp")
+    @Key("disable-commands-in-pvp")
     private boolean disableCommandsInPvp = true;
+
     @Comment({"Команды которые можно писать во время пвп", "Команды писать без '/' (кол-во '/' - 1)", "Плагин будет пытаться сам " +
             "определить алисы для команд (msg,tell,m), но для некоторых команд возможно придется самому прописать алиасы",
             "commands-whitelist:", "- command", "- command2", "- /expand"})
-    @ConfigKey("commands-whitelist")
+    @Key("commands-whitelist")
     private List<String> whiteListedCommands = new ArrayList<>(0);
-    @ConfigKey("cancel-interact-with-entities")
+
+    @Key("cancel-interact-with-entities")
     @Comment("Отменять ли взаимодействие с энтити, во время пвп")
     private boolean cancelInteractWithEntities = false;
+
     @Comment("Убивать ли игрока если он вышел во время пвп?")
-    @ConfigKey("kill-on-leave")
+    @Key("kill-on-leave")
     private boolean killOnLeave = true;
+
     @Comment("Убивать ли игрока если его кикнули во время пвп?")
-    @ConfigKey("kill-on-kick")
+    @Key("kill-on-kick")
     private boolean killOnKick = true;
+
     @Comment("Выполнять ли команды, если игрока кикнули во время пвп?")
-    @ConfigKey("run-commands-on-kick")
+    @Key("run-commands-on-kick")
     private boolean runCommandsOnKick = true;
+
     @Comment("Какой текст должен быть впричине кика, чтобы его убило/выполнились команды. Если пусто, то будет убивать/выполняться " +
             "команды всегда")
-    @ConfigKey("kick-messages")
+    @Key("kick-messages")
     private List<String> kickMessages = Arrays.asList("спам", "реклама", "анти-чит");
+
     @Comment({"Какие команды запускать от консоли при выходе игрока во время пвп?", "commands-on-leave:", "- command1", "- command2 " +
             "%player%"})
-    @ConfigKey("commands-on-leave")
+    @Key("commands-on-leave")
     private List<String> commandsOnLeave = new ArrayList<>(0);
+
     @Comment("Отключать ли у игрока который ударил FLY, GM, GOD, VANISH?")
-    @ConfigKey("disable-powerups")
+    @Key("disable-powerups")
     private boolean disablePowerups = true;
+
     @Comment({"Какие команды выполнять, если были отключены усиления у игрока", "Данную настройку можно использовать например для того, " +
             "чтобы наложить на игрока отрицательный эффект, если он начал пвп в ГМ/ФЛАЕ/и тд",
             "commands-on-powerups-disable: ", "- command1 %player%", "- effect give %player% weakness 10"
     })
-    @ConfigKey("commands-on-powerups-disable")
+    @Key("commands-on-powerups-disable")
     private List<String> commandsOnPowerupsDisable = new ArrayList<>(0);
+
     @Comment({"Отключать ли возможность телепортироваться во время пвп?"})
-    @ConfigKey("disable-teleports-in-pvp")
+    @Key("disable-teleports-in-pvp")
     private boolean disableTeleportsInPvp = true;
+
     @Comment("Игнорировать ли PVP deny во время пвп между игроками?")
-    @ConfigKey("ignore-worldguard")
+    @Key("ignore-worldguard")
     private boolean ignoreWorldGuard = true;
+
     @Comment({"Включать ли игроку, который не участвует в пвп и удрарил другого игрока в pvp, pvp режим",
             "Если два игрока дерутся на територии где PVP deny и их ударить, то у того кто ударил так-же включится PVP режим"})
-    @ConfigKey("join-pvp-in-worldguard")
+    @Key("join-pvp-in-worldguard")
     private boolean joinPvPInWorldGuard = false;
+
+    @Comment({"В каких регионах не будет работать плагин", "ignored-worldguard-regions:", "- duels1", "- region2"})
+    @Key("ignored-worldguard-regions")
+    private List<String> ignoredWgRegions = new ArrayList<>(0);
+    @Ignore
+    private Set<String> ignoredWgRegionsSet;
+
+    @Comment("Отключать ли активный ПВП режим когда игрок заходит в игнорируемый регион?")
+    @Key("disable-pvp-in-ignored-region")
+    private boolean disablePvpInIgnoredRegion = false;
+
     @Comment("Скрывать ли сообщения о заходе игроков?")
-    @ConfigKey("hide-join-message")
+    @Key("hide-join-message")
     private boolean hideJoinMessage = false;
+
     @Comment("Скрывать ли сообщения о выходе игроков?")
-    @ConfigKey("hide-leave-message")
+    @Key("hide-leave-message")
     private boolean hideLeaveMessage = false;
+
     @Comment("Скрывать ли сообщение о смерти игроков?")
-    @ConfigKey("hide-death-message")
+    @Key("hide-death-message")
     private boolean hideDeathMessage = false;
+
     @Comment("Миры в котором плагин не работает")
     private List<String> disabledWorlds = Arrays.asList("world1", "world2");
+    @Ignore
+    private Set<String> disabledWorldsSet;
 
-    public Settings(ConfigurationProvider provider) {
-        super(provider);
+    @Override
+    public void loaded() {
+        this.ignoredWgRegionsSet = ignoredWgRegions.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        this.disabledWorldsSet = disabledWorlds.stream().map(String::toLowerCase).collect(Collectors.toSet());
     }
 
     public String getConfigVersion() {
@@ -184,6 +221,14 @@ public class Settings extends Configuration {
         return ignoreWorldGuard;
     }
 
+    public Set<String> getIgnoredWgRegions() {
+        return ignoredWgRegionsSet;
+    }
+
+    public boolean isDisablePvpInIgnoredRegion() {
+        return disablePvpInIgnoredRegion;
+    }
+
     public boolean isJoinPvPInWorldGuard() {
         return joinPvPInWorldGuard;
     }
@@ -204,38 +249,41 @@ public class Settings extends Configuration {
         return commandsOnLeave;
     }
 
-    public List<String> getDisabledWorlds() {
-        return disabledWorlds;
+    public Set<String> getDisabledWorlds() {
+        return disabledWorldsSet;
     }
 
     @Override
     public String toString() {
         return "Settings{" +
-            "configVersion='" + configVersion + '\'' +
-            ", messages=" + messages +
-            ", goldenAppleCooldown=" + goldenAppleCooldown +
-            ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
-            ", enderPearlCooldown=" + enderPearlCooldown +
-            ", сhorusCooldown=" + сhorusCooldown +
-            ", fireworkCooldown=" + fireworkCooldown +
-            ", totemCooldown=" + totemCooldown +
-            ", pvpTime=" + pvpTime +
-            ", disableCommandsInPvp=" + disableCommandsInPvp +
-            ", whiteListedCommands=" + whiteListedCommands +
-            ", killOnLeave=" + killOnLeave +
-            ", killOnKick=" + killOnKick +
-            ", runCommandsOnKick=" + runCommandsOnKick +
-            ", kickMessages=" + kickMessages +
-            ", commandsOnLeave=" + commandsOnLeave +
-            ", disablePowerups=" + disablePowerups +
-            ", commandsOnPowerupsDisable=" + commandsOnPowerupsDisable +
-            ", disableTeleportsInPvp=" + disableTeleportsInPvp +
-            ", ignoreWorldGuard=" + ignoreWorldGuard +
-            ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +
-            ", hideJoinMessage=" + hideJoinMessage +
-            ", hideLeaveMessage=" + hideLeaveMessage +
-            ", hideDeathMessage=" + hideDeathMessage +
-            ", disabledWorlds=" + disabledWorlds +
-            '}';
+                "configVersion='" + configVersion + '\'' +
+                ", messages=" + messages +
+                ", goldenAppleCooldown=" + goldenAppleCooldown +
+                ", enchantedGoldenAppleCooldown=" + enchantedGoldenAppleCooldown +
+                ", enderPearlCooldown=" + enderPearlCooldown +
+                ", сhorusCooldown=" + сhorusCooldown +
+                ", fireworkCooldown=" + fireworkCooldown +
+                ", totemCooldown=" + totemCooldown +
+                ", pvpTime=" + pvpTime +
+                ", disableCommandsInPvp=" + disableCommandsInPvp +
+                ", whiteListedCommands=" + whiteListedCommands +
+                ", cancelInteractWithEntities=" + cancelInteractWithEntities +
+                ", killOnLeave=" + killOnLeave +
+                ", killOnKick=" + killOnKick +
+                ", runCommandsOnKick=" + runCommandsOnKick +
+                ", kickMessages=" + kickMessages +
+                ", commandsOnLeave=" + commandsOnLeave +
+                ", disablePowerups=" + disablePowerups +
+                ", commandsOnPowerupsDisable=" + commandsOnPowerupsDisable +
+                ", disableTeleportsInPvp=" + disableTeleportsInPvp +
+                ", ignoreWorldGuard=" + ignoreWorldGuard +
+                ", joinPvPInWorldGuard=" + joinPvPInWorldGuard +
+                ", ignoredWgRegions=" + ignoredWgRegions +
+                ", disablePvpInIgnoredRegion=" + disablePvpInIgnoredRegion +
+                ", hideJoinMessage=" + hideJoinMessage +
+                ", hideLeaveMessage=" + hideLeaveMessage +
+                ", hideDeathMessage=" + hideDeathMessage +
+                ", disabledWorlds=" + disabledWorlds +
+                '}';
     }
 }

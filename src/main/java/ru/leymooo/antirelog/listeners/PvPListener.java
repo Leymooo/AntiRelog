@@ -119,7 +119,7 @@ public class PvPListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
         if (settings.isDisableCommandsInPvp() && pvpManager.isInPvP(e.getPlayer())) {
             String command = e.getMessage().split(" ")[0].replaceFirst("/", "");

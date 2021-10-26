@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.codemc.worldguardwrapper.WorldGuardWrapper;
+import org.codemc.worldguardwrapper.region.IWrappedRegion;
 import ru.leymooo.antirelog.Antirelog;
 import ru.leymooo.antirelog.config.Settings;
 import ru.leymooo.antirelog.event.PvpPreStartEvent;
@@ -17,6 +19,9 @@ import ru.leymooo.antirelog.util.Utils;
 import ru.leymooo.antirelog.util.VersionUtils;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PvPManager {
 
@@ -57,35 +62,31 @@ public class PvPManager {
             if (pvpMap.isEmpty() && silentPvpMap.isEmpty()) {
                 return;
             }
-            if (!pvpMap.isEmpty()) {
-                List<Player> playersInPvp = new ArrayList<>(pvpMap.keySet());
-                for (Player player : playersInPvp) {
-                    int currentTime = getTimeRemainingInPvP(player);
-                    int timeRemaining = currentTime - 1;
-                    if (timeRemaining <= 0) {
-                        stopPvP(player);
-                    } else {
-                        updatePvpMode(player, false, timeRemaining);
-                        callUpdateEvent(player, currentTime, timeRemaining);
-                    }
-                }
-            }
-            if (!silentPvpMap.isEmpty()) {
-                List<Player> playersInSilentPvp = new ArrayList<>(silentPvpMap.keySet());
-                for (Player player : playersInSilentPvp) {
-                    int currentTime = getTimeRemainingInPvPSilent(player);
-                    int timeRemaining = currentTime - 1;
-                    if (timeRemaining <= 0) {
-                        stopPvPSilent(player);
-                    } else {
-                        updatePvpMode(player, true, timeRemaining);
-                        callUpdateEvent(player, currentTime, timeRemaining);
-                    }
-                }
-            }
+            iterateMap(pvpMap, false);
+            iterateMap(silentPvpMap, true);
 
         }, 20, 20);
         this.bossbarManager.createBossBars();
+    }
+
+    private void iterateMap(Map<Player, Integer> map, boolean bypassed) {
+        if (!map.isEmpty()) {
+            List<Player> playersInPvp = new ArrayList<>(map.keySet());
+            for (Player player : playersInPvp) {
+                int currentTime = bypassed ? getTimeRemainingInPvPSilent(player) : getTimeRemainingInPvP(player);
+                int timeRemaining = currentTime - 1;
+                if (timeRemaining <= 0 || (settings.isDisablePvpInIgnoredRegion() && isInIgnoredRegion(player))) {
+                    if (bypassed) {
+                        stopPvPSilent(player);
+                    } else {
+                        stopPvP(player);
+                    }
+                } else {
+                    updatePvpMode(player, bypassed, timeRemaining);
+                    callUpdateEvent(player, currentTime, timeRemaining);
+                }
+            }
+        }
     }
 
     public boolean isInPvP(Player player) {
@@ -109,6 +110,11 @@ public class PvPManager {
             if (defender.getGameMode() == GameMode.CREATIVE) { //i dont have time to determite, why some events is called when defender in creative
                 return;
             }
+
+            if (attacker.hasMetadata("NPC") || defender.hasMetadata("NPC")) {
+                return;
+            }
+
             if (defender.isDead() || attacker.isDead()) {
                 return;
             }
@@ -120,6 +126,11 @@ public class PvPManager {
         if (isInIgnoredWorld(attacker)) {
             return;
         }
+
+        if (isInIgnoredRegion(attacker) || isInIgnoredRegion(defender)) {
+            return;
+        }
+
         if (!isPvPModeEnabled() && settings.isDisablePowerups()) {
             if (!isHasBypassPermission(attacker)) {
                 powerUpsManager.disablePowerUpsWithRunCommands(attacker);
@@ -305,6 +316,26 @@ public class PvPManager {
     }
 
     public boolean isInIgnoredWorld(Player player) {
-        return settings.getDisabledWorlds().contains(player.getWorld().getName());
+        return settings.getDisabledWorlds().contains(player.getWorld().getName().toLowerCase());
+    }
+
+    public boolean isInIgnoredRegion(Player player) {
+        if (!plugin.isWorldguardEnabled() || settings.getIgnoredWgRegions().isEmpty()) {
+            return false;
+        }
+
+        Set<String> regions = settings.getIgnoredWgRegions();
+        Set<IWrappedRegion> wrappedRegions = WorldGuardWrapper.getInstance().getRegions(player.getLocation());
+        if (wrappedRegions.isEmpty()) {
+            return false;
+        }
+        for (IWrappedRegion region : wrappedRegions) {
+            if (regions.contains(region.getId().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+
+
     }
 }
