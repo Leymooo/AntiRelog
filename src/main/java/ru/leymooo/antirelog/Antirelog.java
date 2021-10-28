@@ -83,14 +83,18 @@ public class Antirelog extends JavaPlugin {
         if (!file.exists()) {
             //create new file
             settings.save();
+            settings.loaded();
+            getLogger().info("config.yml успешно создан");
         } else if (provider.isFileSuccessfullyLoaded()) {
             if (settings.load()) {
                 if (!((String) provider.get("config-version")).equals(settings.getConfigVersion())) {
-                    getLogger().info("Конфиг был обновлен.");
+                    getLogger().info("Конфиг был обновлен. Проверьте новые значения");
                     settings.save();
                 }
+                getLogger().info("Конфиг успешно загружен");
             } else {
                 getLogger().warning("Не удалось загрузить конфиг");
+                settings.loaded();
             }
         } else {
             getLogger().warning("Can't load settings from file, using default...");
