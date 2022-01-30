@@ -157,9 +157,9 @@ public class PvPListener implements Listener {
         if (e.getReason() == null) {
             return;
         }
-        String reason = ChatColor.stripColor(e.getReason());
+        String reason = ChatColor.stripColor(e.getReason().toLowerCase());
         for (String killReason : settings.getKickMessages()) {
-            if (reason.contains(killReason)) {
+            if (reason.contains(killReason.toLowerCase())) {
                 kickedInPvp(player);
                 return;
             }

@@ -51,8 +51,7 @@ public class VersionUtils {
             }
             JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
         } catch (Exception e) {
-            JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Trying another method"
-                    , e);
+            JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Failed to detect MC version, trying another method...");
             try {
                 String[] split = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
                 majorVersion = Integer.parseInt(split[1]);
@@ -62,15 +61,16 @@ public class VersionUtils {
                 }
                 JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
             } catch (Exception e2) {
-                JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Trying another " +
-                        "method", e2);
+                JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Failed to detect MC version, trying another method... ");
                 try {
                     String[] split = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].split("_");
                     majorVersion = Integer.parseInt(split[1]);
                     JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);
                 } catch (Exception e3) {
-                    JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Could not detect bukkit version. Fallback to 1" +
-                            ".8.8.", e3);
+                    JavaPlugin.getPlugin(Antirelog.class).getLogger().log(Level.WARNING, "Failed to detect MC version, trying another method... Fallback to 1" +
+                            ".8.8.", e);
+                    e2.printStackTrace();
+                    e3.printStackTrace();
                     majorVersion = 8;
                     minorVersion = 8;
                     JavaPlugin.getPlugin(Antirelog.class).getLogger().info("Detected version: 1."  + majorVersion + "." + minorVersion);

@@ -6,7 +6,7 @@
 
     <groupId>ru.leymooo</groupId>
     <artifactId>antirelog</artifactId>
-    <version>3.0.10-dev</version>
+    <version>3.0.10</version>
     <packaging>jar</packaging>
 
     <name>AntiRelog</name>
@@ -121,13 +121,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ru.leymooo</groupId>
             <artifactId>AnnotatedYAMLConfiguration-bukkit</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.essentialsx</groupId>
