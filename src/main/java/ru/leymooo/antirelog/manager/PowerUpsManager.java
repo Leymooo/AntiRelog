@@ -117,8 +117,7 @@ public class PowerUpsManager {
             if (user != null) {
                 if (user.isGod()) {
                     CMI.getInstance().getNMS().changeGodMode(player, false);
-                    user.setGod(false);
-                    user.setTgod(null);
+                    user.setTgod(0);
                     disabled = true;
                 }
                 if (user.isVanished()) {

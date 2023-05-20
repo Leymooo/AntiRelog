@@ -6,7 +6,7 @@
 
     <groupId>ru.leymooo</groupId>
     <artifactId>antirelog</artifactId>
-    <version>3.0.10</version>
+    <version>3.0.11</version>
     <packaging>jar</packaging>
 
     <name>AntiRelog</name>
@@ -96,7 +96,7 @@
         <!-- vanishnopacket-->
         <repository>
             <id>kitteh-repo</id>
-            <url>http://repo.kitteh.org/</url>
+            <url>https://repo.minebench.de/</url>
         </repository>
         <!--libsdisguises-->
         <repository>
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -150,7 +150,7 @@
         <dependency>
             <groupId>org.kitteh</groupId>
             <artifactId>VanishNoPacket</artifactId>
-            <version>3.19.1</version>
+            <version>3.20</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -171,7 +171,7 @@
             <version>ANY</version>
             <scope>system</scope>
             <!--new version of plugin with only required classes to compile-->
-            <systemPath>${project.basedir}/libs/CMI-cleaned.jar</systemPath>
+            <systemPath>${project.basedir}/libs/CMI-API9.5.0.8.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
