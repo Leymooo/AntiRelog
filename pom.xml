@@ -108,10 +108,6 @@
             <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
         <repository>
-            <id>leymooo's repo</id>
-            <url>https://maven.leymooo.me/repository/public/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -124,6 +120,7 @@
             <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!-- maven repo is dead, do `mvn clean install` your self https://github.com/Leymooo/AnnotatedYAMLConfiguration -->
         <dependency>
             <groupId>ru.leymooo</groupId>
             <artifactId>AnnotatedYAMLConfiguration-bukkit</artifactId>
@@ -171,7 +168,7 @@
             <version>ANY</version>
             <scope>system</scope>
             <!--new version of plugin with only required classes to compile-->
-            <systemPath>${project.basedir}/libs/CMI-API9.5.0.8.jar</systemPath>
+            <systemPath>${project.basedir}/libs/CMI-API9.7.0.1.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
